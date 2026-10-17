@@ -6,17 +6,34 @@ A private, offline-ready todo PWA for iPhone and desktop.
 
 ## Features
 
-- Create, edit, complete, delete and undo deletion.
-- Search and filter active or completed todos.
-- IndexedDB persistence, including offline edits and reloads.
-- JSON backup export and validated, atomic import. Newer local changes win.
-- Installable app with an offline shell and explicit update prompt.
-- iPhone safe-area support for the Dynamic Island, landscape and home indicator.
-- Keyboard-aware viewport, 16px inputs, contained scrolling and edge fallback for
-  older WebKit. Pinch zoom remains available for accessibility.
-- Native scrolling, no animation loop, no external fonts or runtime dependencies.
-  Refresh rate is controlled by the device and browser; 120 fps is not forced and
-  a 30 fps floor cannot be guaranteed. Reduce Motion is respected.
+- Today, Upcoming, Anytime and Done views. Overdue tasks stay on Today, and
+  tasks finished today collect in a Completed group.
+- Gestures first, each with a tap or keyboard equivalent: pull the list down to
+  add, swipe a task right to complete or left to delete (with undo), hold a
+  task for quick actions (Today, Tomorrow, Weekend, Important, Delete), swipe a
+  sheet down to close it, and swipe down on the composer to hide the keyboard.
+- Floating composer with Today, Tomorrow, Weekend or any date, plus Important.
+  Return adds and keeps the keyboard open.
+- Task sheet for text, due date, importance and a note. Closing it saves;
+  Cancel discards.
+- Search across tasks and notes.
+- Fixed app shell on phones: the page never scrolls; only the list scrolls
+  when it overflows. Desktop uses a sidebar and a white working panel, with
+  shortcuts `N` (new), `/` (search) and `1`-`4` (views).
+- iPhone integration where the web platform allows it: haptic feedback on
+  iOS 18 (via the native switch control), an optional app icon badge for tasks
+  due today (home-screen app, notification permission required), share sheet
+  for tasks and backups, native date pickers and safe areas.
+- IndexedDB persistence, offline use, JSON backup export and validated, atomic
+  import. Newer local changes win. Older backups and records still load.
+- Installable app with an offline shell. New versions install in the
+  background and reload automatically once no draft or open sheet would be
+  lost; otherwise an Update available pill waits. The app checks for updates
+  at launch, on return to the foreground and hourly. Reduce Motion is
+  respected. Pinch zoom remains available.
+
+Web apps cannot schedule reminders, use Live Activities or widgets without a
+push server or native code, so Tuck does not promise them.
 
 ## Install on iPhone
 

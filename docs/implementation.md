@@ -15,11 +15,16 @@ keyboard, home-screen installation and native bounce remain device checks.
 
 Implementation choice: native JavaScript modules, HTML and CSS, with no runtime
 dependencies. Playwright is an exact-pinned Apache-2.0 development dependency.
-Use a white notebook surface, blue ink (#2455db), slate text (#203047), muted
-text (#59677c), rules (#dde3ef) and pale blue canvas (#f2f5fb). Use the native
-system sans-serif stack for an iPhone-native feel. Left-aligned list and composer
-are the main content; status and installation tools sit beside them on desktop
-and below the list on narrow screens.
+
+Design (light mode), after Jakub Antalik's Dona references on Dribbble: cool
+grey canvas (#eceef1), white cards (radius 16, 8px gaps), ink (#1f2328),
+secondary text (#5f6670), soft square checkboxes, status rings (green today,
+blue upcoming, purple anytime, red overdue), a floating composer pill, white
+bottom sheets with a grabber, a grey info group and a pale note card. Status
+bar style is default so dark glyphs sit on the light canvas below the Dynamic
+Island. Desktop uses a sidebar and a white working panel. Optional record
+fields: due (local YYYY-MM-DD), flagged, notes, completedAt. Backups stay
+version 1.
 
 ## Plan
 

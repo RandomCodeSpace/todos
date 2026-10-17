@@ -1,13 +1,23 @@
 import { test, expect } from '@playwright/test';
 
 async function add(page, text) {
-  await page.getByLabel('New todo').fill(text);
-  await page.getByRole('button', { name: 'Add todo', exact: true }).click();
+  await page.getByLabel('New task').fill(text);
+  await page.getByRole('button', { name: 'Add task', exact: true }).click();
   await expect(page.locator('.todo-text', { hasText: text })).toBeVisible();
+}
+// Touch layouts delete from the task sheet; pointer layouts also show a row button.
+async function remove(page, text) {
+  await page.getByRole('button', { name: `Edit ${text}`, exact: true }).click();
+  await page.getByRole('dialog').getByRole('button', { name: 'Delete task', exact: true }).click();
+}
+function view(page, name) { return page.getByRole('navigation', { name: 'Views' }).getByRole('button', { name: new RegExp(`^${name}`) }); }
+async function openSettings(page) {
+  await page.getByRole('button', { name: 'Settings' }).click();
+  await expect(page.getByRole('dialog')).toBeVisible();
 }
 async function ready(page) {
   await page.goto('./');
-  await expect(page.getByLabel('New todo')).toBeEnabled();
+  await expect(page.getByLabel('New task')).toBeEnabled();
 }
 
 test('create, edit, complete, filter and delete survive reload', async ({ page }) => {
@@ -16,18 +26,20 @@ test('create, edit, complete, filter and delete survive reload', async ({ page }
   await page.reload();
   await expect(page.getByText('Buy oat milk', { exact: true })).toBeVisible();
   await page.getByRole('button', { name: 'Edit Buy oat milk' }).click();
-  await page.getByLabel('Edit todo').fill('Buy coffee');
+  await page.getByLabel('Edit task').fill('Buy coffee');
   await page.getByRole('button', { name: 'Save changes' }).click();
   await page.getByRole('checkbox', { name: 'Complete Buy coffee' }).click();
   await expect(page.getByRole('checkbox', { name: 'Reopen Buy coffee' })).toBeChecked();
-  await page.getByRole('button', { name: /^Active/ }).click();
-  await expect(page.getByText('Buy coffee', { exact: true })).toHaveCount(0);
-  await page.getByRole('button', { name: /^Done/ }).click();
+  await view(page, 'Done').click();
   await expect(page.getByText('Buy coffee', { exact: true })).toBeVisible();
-  await page.getByRole('button', { name: 'Delete Buy coffee' }).click();
+  await view(page, 'Today').click();
+  await expect(page.locator('.section', { hasText: 'Completed' })).toBeVisible();
+  await expect(page.getByRole('checkbox', { name: 'Reopen Buy coffee' })).toBeChecked();
+  await view(page, 'Done').click();
+  await remove(page, 'Buy coffee');
   await page.getByRole('button', { name: 'Undo', exact: true }).click();
   await expect(page.getByText('Buy coffee', { exact: true })).toBeVisible();
-  await page.getByRole('button', { name: 'Delete Buy coffee' }).click();
+  await remove(page, 'Buy coffee');
   await expect(page.getByText('Buy coffee', { exact: true })).toHaveCount(0);
   await page.reload();
   await expect(page.getByText('Buy coffee', { exact: true })).toHaveCount(0);
@@ -42,13 +54,14 @@ test('offline launch and CRUD use IndexedDB', async ({ page, context }) => {
   await expect(page.getByText('Saved online', { exact: true })).toBeVisible();
   await add(page, 'Written offline');
   await page.getByRole('button', { name: 'Edit Written offline' }).click();
-  await page.getByLabel('Edit todo').fill('Edited offline');
+  await page.getByLabel('Edit task').fill('Edited offline');
   await page.getByRole('button', { name: 'Save changes' }).click();
   await page.getByRole('checkbox', { name: 'Complete Edited offline' }).click();
   await expect(page.getByRole('checkbox', { name: 'Reopen Edited offline' })).toBeChecked();
-  await page.getByRole('button', { name: 'Delete Saved online' }).click();
+  await remove(page, 'Saved online');
   await expect(page.getByText('Saved online', { exact: true })).toHaveCount(0);
   await page.reload();
+  await view(page, 'Done').click();
   await expect(page.getByText('Edited offline', { exact: true })).toBeVisible();
   await expect(page.getByText('Saved online', { exact: true })).toHaveCount(0);
   const stored = await page.evaluate(async () => (await import('./storage.js')).listTodos());
@@ -60,9 +73,10 @@ test('untrusted text is literal and search works', async ({ page }) => {
   await ready(page);
   await add(page, '<img src=x onerror=alert(1)>');
   await expect(page.locator('#todo-list img')).toHaveCount(0);
-  await page.getByLabel('Search todos').fill('missing');
-  await expect(page.getByText('No matching todos')).toBeVisible();
-  await page.getByLabel('Search todos').fill('ONERROR');
+  if (await page.getByRole('button', { name: 'Search', exact: true }).isVisible()) await page.getByRole('button', { name: 'Search', exact: true }).click();
+  await page.getByLabel('Search tasks').fill('missing');
+  await expect(page.getByText('No matches')).toBeVisible();
+  await page.getByLabel('Search tasks').fill('ONERROR');
   await expect(page.locator('.todo-text')).toHaveCount(1);
 });
 
@@ -75,8 +89,10 @@ test('invalid import preserves todos and valid import merges', async ({ page }) 
   await expect(page.getByText('Keep this', { exact: true })).toBeVisible();
   const backup = { version: 1, todos: [{ id: 'imported', text: 'From backup', completed: false, createdAt: 100, updatedAt: 100 }] };
   await upload.setInputFiles({ name: 'todos.json', mimeType: 'application/json', buffer: Buffer.from(JSON.stringify(backup)) });
-  await expect(page.getByText('From backup', { exact: true })).toBeVisible();
   await expect(page.getByText('Keep this', { exact: true })).toBeVisible();
+  await view(page, 'Anytime').click();
+  await expect(page.getByText('From backup', { exact: true })).toBeVisible();
+  await openSettings(page);
   const download = page.waitForEvent('download');
   await page.getByRole('button', { name: 'Export backup' }).click();
   expect((await download).suggestedFilename()).toMatch(/^tuck-.*\.json$/);
@@ -87,10 +103,10 @@ test('failed storage does not pretend the todo was saved', async ({ page }) => {
   await page.evaluate(() => {
     IDBObjectStore.prototype.add = () => { throw new DOMException('Storage full', 'QuotaExceededError'); };
   });
-  await page.getByLabel('New todo').fill('Do not lose this draft');
-  await page.getByRole('button', { name: 'Add todo', exact: true }).click();
+  await page.getByLabel('New task').fill('Do not lose this draft');
+  await page.getByRole('button', { name: 'Add task', exact: true }).click();
   await expect(page.getByRole('alert')).toContainText('could not be saved');
-  await expect(page.getByLabel('New todo')).toHaveValue('Do not lose this draft');
+  await expect(page.getByLabel('New task')).toHaveValue('Do not lose this draft');
   await expect(page.locator('.todo-text')).toHaveCount(0);
 });
 
@@ -98,27 +114,31 @@ test('unavailable IndexedDB has an honest error state', async ({ page }) => {
   await page.addInitScript(() => { IDBFactory.prototype.open = () => { throw new Error('Unavailable'); }; });
   await page.goto('./');
   await expect(page.getByRole('alert')).toContainText('Storage is unavailable');
-  await expect(page.getByRole('button', { name: 'Add todo', exact: true })).toBeDisabled();
+  await expect(page.getByRole('button', { name: 'Add task', exact: true })).toBeDisabled();
 });
 
 test('mobile sizing and scroll controls keep inputs usable', async ({ page }) => {
   await ready(page);
-  for (const width of [320, 390, 1280]) {
-    await page.setViewportSize({ width, height: 720 });
+  for (let index = 0; index < 12; index++) await add(page, `Task number ${index} with a fairly long description to wrap`);
+  for (const [width, height] of [[320, 568], [375, 667], [393, 852], [1280, 720]]) {
+    await page.setViewportSize({ width, height });
+    await page.waitForFunction(() => document.querySelector('#add-form').getBoundingClientRect().bottom <= innerHeight);
     const layout = await page.evaluate(() => ({
-      overflow: document.documentElement.scrollWidth > innerWidth,
-      font: parseFloat(getComputedStyle(document.querySelector('textarea')).fontSize),
-      overscroll: getComputedStyle(document.querySelector('.workspace')).getPropertyValue('overscroll-behavior-y'),
+      overflow: document.documentElement.scrollWidth > innerWidth || document.documentElement.scrollHeight > innerHeight,
+      composerVisible: document.querySelector('#add-form').getBoundingClientRect().bottom <= innerHeight,
+      font: parseFloat(getComputedStyle(document.querySelector('#new-todo')).fontSize),
+      overscroll: getComputedStyle(document.querySelector('.list-area')).getPropertyValue('overscroll-behavior-y'),
       supportsOverscroll: CSS.supports('overscroll-behavior', 'none'),
       viewport: document.querySelector('meta[name=viewport]').content
     }));
     expect(layout.overflow).toBe(false);
+    expect(layout.composerVisible).toBe(true);
     expect(layout.font).toBeGreaterThanOrEqual(16);
     if (layout.supportsOverscroll) expect(layout.overscroll).toBe('none');
     expect(layout.viewport).not.toContain('user-scalable=no');
   }
   const prevented = await page.evaluate(() => {
-    const target = document.querySelector('.workspace');
+    const target = document.querySelector('.list-area');
     target.scrollTop = 0;
     const start = new Event('touchstart', { bubbles: true });
     Object.defineProperty(start, 'touches', { value: [{ clientX: 50, clientY: 100 }] });
@@ -147,6 +167,7 @@ test('clear completed leaves active todos intact', async ({ page }) => {
   await add(page, 'Finished task');
   await page.getByRole('checkbox', { name: 'Complete Finished task' }).click();
   await expect(page.getByRole('checkbox', { name: 'Reopen Finished task' })).toBeChecked();
+  await openSettings(page);
   page.once('dialog', dialog => dialog.accept());
   await page.getByRole('button', { name: 'Clear completed' }).click();
   await expect(page.getByText('Finished task', { exact: true })).toHaveCount(0);
@@ -159,22 +180,22 @@ test('an edit deleted in another tab keeps the draft and reports the conflict', 
   await ready(page);
   await add(page, 'Original todo');
   await page.getByRole('button', { name: 'Edit Original todo' }).click();
-  await page.getByLabel('Edit todo').fill('A draft worth keeping');
+  await page.getByLabel('Edit task').fill('A draft worth keeping');
   const second = await context.newPage();
   await ready(second);
-  await second.getByRole('button', { name: 'Delete Original todo' }).click();
+  await remove(second, 'Original todo');
   await expect(second.locator('.todo-text')).toHaveCount(0);
   await page.getByRole('button', { name: 'Save changes' }).click();
   await expect(page.getByRole('dialog')).toBeVisible();
   await expect(page.getByRole('dialog').getByRole('alert')).toContainText('deleted in another tab');
-  await expect(page.getByLabel('Edit todo')).toHaveValue('A draft worth keeping');
+  await expect(page.getByLabel('Edit task')).toHaveValue('A draft worth keeping');
 });
 
 test('edit storage errors are accessible inside the modal', async ({ page }) => {
   await ready(page);
   await add(page, 'Original todo');
   await page.getByRole('button', { name: 'Edit Original todo' }).click();
-  await page.getByLabel('Edit todo').fill('My changed draft');
+  await page.getByLabel('Edit task').fill('My changed draft');
   await page.evaluate(() => {
     const original = IDBDatabase.prototype.transaction;
     IDBDatabase.prototype.transaction = function (name, mode, ...args) {
@@ -184,7 +205,7 @@ test('edit storage errors are accessible inside the modal', async ({ page }) => 
   });
   await page.getByRole('button', { name: 'Save changes' }).click();
   await expect(page.getByRole('dialog').getByRole('alert')).toContainText('could not be saved');
-  await expect(page.getByLabel('Edit todo')).toHaveValue('My changed draft');
+  await expect(page.getByLabel('Edit task')).toHaveValue('My changed draft');
 });
 
 test('a failed refresh after a committed add does not invite a duplicate', async ({ page }) => {
@@ -197,9 +218,9 @@ test('a failed refresh after a committed add does not invite a duplicate', async
       return original.apply(this, args);
     };
   });
-  await page.getByLabel('New todo').fill('Already committed');
-  await page.getByRole('button', { name: 'Add todo', exact: true }).click();
-  await expect(page.getByLabel('New todo')).toHaveValue('');
+  await page.getByLabel('New task').fill('Already committed');
+  await page.getByRole('button', { name: 'Add task', exact: true }).click();
+  await expect(page.getByLabel('New task')).toHaveValue('');
   await expect(page.getByRole('alert')).toContainText('was saved');
   await page.reload();
   await expect(page.locator('.todo-text')).toHaveCount(1);
@@ -214,12 +235,12 @@ test('keyboard focus survives toggle, edit and delete', async ({ page }) => {
   await page.keyboard.press('Space');
   await expect(page.getByRole('checkbox', { name: 'Reopen Keyboard task' })).toBeFocused();
   await page.getByRole('button', { name: 'Edit Keyboard task' }).click();
-  await page.getByLabel('Edit todo').fill('Edited with keyboard');
+  await page.getByLabel('Edit task').fill('Edited with keyboard');
   await page.getByRole('button', { name: 'Save changes' }).click();
   await expect(page.getByRole('button', { name: 'Edit Edited with keyboard' })).toBeFocused();
   await page.getByRole('button', { name: 'Delete Edited with keyboard' }).focus();
   await page.keyboard.press('Enter');
-  await expect(page.getByRole('button', { name: /^All/ })).toBeFocused();
+  await expect(view(page, 'Today')).toBeFocused();
 });
 
 test('Tuck keeps records saved before the rename', async ({ page }) => {
@@ -238,8 +259,84 @@ test('Tuck keeps records saved before the rename', async ({ page }) => {
   }));
   await ready(page);
   await expect(page).toHaveTitle('Tuck - A little more headspace');
-  await expect(page.getByRole('link', { name: 'Tuck home' })).toBeVisible();
+  await expect(page.locator('a.brand')).toHaveAttribute('aria-label', 'Tuck home');
   await expect(page.getByText('Keep my existing list', { exact: true })).toBeVisible();
   const manifest = await page.evaluate(async () => (await fetch('./manifest.webmanifest')).json());
   expect(manifest.short_name).toBe('Tuck');
+});
+
+test('due chips route tasks to views and the sheet edits date, flag and notes', async ({ page }) => {
+  await ready(page);
+  await page.getByLabel('New task').fill('Plan the trip');
+  await page.getByRole('group', { name: 'When' }).getByRole('button', { name: 'Tomorrow' }).click();
+  await page.getByRole('button', { name: 'Add task', exact: true }).click();
+  await expect(page.getByRole('status')).toContainText('Added to Upcoming');
+  await expect(page.locator('.todo-text', { hasText: 'Plan the trip' })).toHaveCount(0);
+  await view(page, 'Upcoming').click();
+  await expect(page.getByText('Plan the trip', { exact: true })).toBeVisible();
+  await expect(page.locator('.section').first()).toHaveText('Tomorrow');
+  await page.getByRole('button', { name: 'Edit Plan the trip' }).click();
+  await page.getByRole('dialog').getByRole('button', { name: 'Today', exact: true }).click();
+  await page.getByRole('dialog').getByLabel('Important').check();
+  await page.getByLabel('Notes').fill('Passports in the drawer');
+  await page.getByRole('button', { name: 'Save changes' }).click();
+  await expect(page.getByText('Plan the trip', { exact: true })).toHaveCount(0);
+  await view(page, 'Today').click();
+  const row = page.locator('.todo', { hasText: 'Plan the trip' });
+  await expect(row).toHaveClass(/flagged/);
+  await expect(row.locator('.ring-today')).toHaveCount(1);
+  await expect(row.locator('.meta')).toContainText('Important');
+  await page.reload();
+  const stored = await page.evaluate(async () => (await import('./storage.js')).listTodos());
+  expect(stored[0]).toMatchObject({ text: 'Plan the trip', flagged: true, notes: 'Passports in the drawer' });
+  expect(stored[0].due).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+});
+
+test('swiping a row completes or deletes it with undo', async ({ page }) => {
+  await ready(page);
+  await add(page, 'Swipe to finish');
+  await add(page, 'Swipe to remove');
+  const drag = (text, distance) => page.evaluate(([label, dx]) => {
+    const row = [...document.querySelectorAll('.todo')].find(item => item.textContent.includes(label)).querySelector('.row');
+    const box = row.getBoundingClientRect();
+    const fire = (type, x) => (type === 'pointerdown' ? row : document).dispatchEvent(new PointerEvent(type, { bubbles: true, pointerId: 7, pointerType: 'touch', clientX: x, clientY: box.y + 20 }));
+    const start = box.x + box.width / 2;
+    fire('pointerdown', start);
+    for (let step = 1; step <= 10; step++) fire('pointermove', start + dx * step / 10);
+    fire('pointerup', start + dx);
+  }, [text, distance]);
+  await drag('Swipe to finish', 260);
+  await expect(page.getByRole('checkbox', { name: 'Reopen Swipe to finish' })).toBeChecked();
+  await drag('Swipe to remove', -260);
+  await expect(page.getByText('Swipe to remove', { exact: true })).toHaveCount(0);
+  await page.getByRole('button', { name: 'Undo', exact: true }).click();
+  await expect(page.getByText('Swipe to remove', { exact: true })).toBeVisible();
+});
+
+test('pull down adds, long press offers quick actions, and closing the sheet saves', async ({ page }) => {
+  await ready(page);
+  await add(page, 'Hold me');
+  const touch = (type, y, target = '#workspace') => page.evaluate(([kind, clientY, selector]) => {
+    const node = document.querySelector(selector);
+    const point = new Touch({ identifier: 1, target: node, clientX: 120, clientY });
+    node.dispatchEvent(new TouchEvent(kind, { bubbles: true, cancelable: true, touches: kind === 'touchend' ? [] : [point], changedTouches: [point] }));
+  }, [type, y, target]);
+  const supportsTouch = await page.evaluate(() => { try { new Touch({ identifier: 1, target: document.body }); return true; } catch { return false; } });
+  if (supportsTouch) {
+    await touch('touchstart', 200);
+    for (const y of [230, 280, 330, 380]) await touch('touchmove', y);
+    await expect(page.locator('#pull')).toHaveClass(/armed/);
+    await touch('touchend', 380);
+    await expect(page.getByLabel('New task')).toBeFocused();
+  }
+  await page.locator('.todo', { hasText: 'Hold me' }).locator('.row').dispatchEvent('contextmenu');
+  const sheet = page.getByRole('dialog');
+  await expect(sheet).toContainText('Hold me');
+  await sheet.getByRole('button', { name: 'Tomorrow' }).click();
+  await expect(page.getByRole('status')).toContainText('Moved to Tomorrow');
+  await view(page, 'Upcoming').click();
+  await page.getByRole('button', { name: 'Edit Hold me' }).click();
+  await page.getByLabel('Edit task').fill('Held and renamed');
+  await page.locator('#edit-dialog').evaluate(dialog => dialog.dispatchEvent(new MouseEvent('click', { bubbles: true })));
+  await expect(page.getByText('Held and renamed', { exact: true })).toBeVisible();
 });

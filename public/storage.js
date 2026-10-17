@@ -45,7 +45,9 @@ export function changeTodo(id, changes) {
     const request = store.get(id);
     request.onsuccess = () => {
       if (!request.result) { abort(new DOMException('This todo was deleted in another tab. Copy your draft into a new todo to keep it.', 'NotFoundError')); return; }
-      store.put({ ...request.result, ...changes, updatedAt: Date.now() });
+      const next = { ...request.result, ...changes, updatedAt: Date.now() };
+      for (const key of Object.keys(next)) if (next[key] === undefined) delete next[key];
+      store.put(next);
     };
   });
 }
