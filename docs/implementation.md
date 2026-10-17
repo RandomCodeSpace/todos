@@ -23,11 +23,11 @@ and below the list on narrow screens.
 
 ## Plan
 
-- [ ] Write behavioral unit and browser tests; observe the missing app fail.
-- [ ] Implement data validation, IndexedDB transactions, accessible UI and PWA.
-- [ ] Verify offline CRUD/reload, import validation, storage failure, multiple
+- [x] Write behavioral unit and browser tests; observe the missing app fail.
+- [x] Implement data validation, IndexedDB transactions, accessible UI and PWA.
+- [x] Verify offline CRUD/reload, import validation, storage failure, multiple
   tabs, iPhone viewport layout and desktop keyboard controls.
-- [ ] Add CI, dependency updates, code scanning and Pages deployment.
+- [x] Add CI, dependency updates, code scanning and Pages deployment.
 - [ ] Publish signed commits, copy applicable repository controls, and verify
   the deployed URL and final GitHub settings.
 
@@ -46,3 +46,18 @@ workflow defaults, dependency review, Dependabot and secret push protection.
 Adapt language-specific CI to JavaScript and browser testing. Only require
 checks that exist for this repository. External integrations requiring their
 own installation or credentials must be reported if unavailable.
+
+## Verification record
+
+Local Chromium desktop and iPhone-sized WebKit: 26 browser tests passed. The
+independent review found four issues; regression tests failed before fixes and
+passed afterward: deleted-record edit conflict, accessible modal error, committed
+write with failed readback, and keyboard focus after mutations.
+
+GitHub organization policy enforces CodeQL default setup. JavaScript reporting
+uses that scan; the separate Actions scan rejects findings locally in its job
+without submitting an incompatible advanced configuration. Socket is installed.
+SonarCloud could not be configured without access to its project credentials.
+
+Device-only verification remains outstanding for physical Dynamic Island layout,
+iPhone keyboard animation, home-screen install and actual display frame rates.

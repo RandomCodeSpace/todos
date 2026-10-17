@@ -56,7 +56,9 @@ or runtime dependency is required. Playwright is the sole development dependency
 
 GitHub Actions deploys `dist/` to Pages after syntax, unit, browser and dependency
 checks pass on main. Pull requests run the same checks plus dependency review.
-CodeQL scans JavaScript and Actions on PRs, main and a weekly schedule.
+The organization's enforced CodeQL default setup scans JavaScript. A separate
+SHA-pinned workflow scans Actions and rejects findings without uploading a
+second configuration that would conflict with organization policy.
 
 Repository settings mirror the applicable controls of
 https://github.com/RandomCodeSpace/unified-agent-manager: signed commits,
@@ -64,8 +66,9 @@ PR-required main, strict checks, linear history, resolved conversations, admin
 enforcement, blocked force pushes/deletions and protected release tags.
 Dependabot, secret scanning and push protection complement those rules.
 
-External SonarCloud/Socket checks depend on their installed GitHub apps and
-credentials. They are required only when configured and producing results here.
+Socket Security is installed for this repository. SonarCloud is not configured:
+no repository Sonar token is available and this session cannot inspect organization
+secrets. No nonfunctional Sonar check is added to branch protection.
 
 Automated WebKit checks emulate an iPhone viewport. Physical iPhone home-screen
 installation, keyboard animation, Dynamic Island geometry and actual display

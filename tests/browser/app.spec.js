@@ -18,7 +18,8 @@ test('create, edit, complete, filter and delete survive reload', async ({ page }
   await page.getByRole('button', { name: 'Edit Buy oat milk' }).click();
   await page.getByLabel('Edit todo').fill('Buy coffee');
   await page.getByRole('button', { name: 'Save changes' }).click();
-  await page.getByRole('checkbox', { name: 'Complete Buy coffee' }).check();
+  await page.getByRole('checkbox', { name: 'Complete Buy coffee' }).click();
+  await expect(page.getByRole('checkbox', { name: 'Reopen Buy coffee' })).toBeChecked();
   await page.getByRole('button', { name: /^Active/ }).click();
   await expect(page.getByText('Buy coffee', { exact: true })).toHaveCount(0);
   await page.getByRole('button', { name: /^Done/ }).click();
@@ -43,7 +44,8 @@ test('offline launch and CRUD use IndexedDB', async ({ page, context }) => {
   await page.getByRole('button', { name: 'Edit Written offline' }).click();
   await page.getByLabel('Edit todo').fill('Edited offline');
   await page.getByRole('button', { name: 'Save changes' }).click();
-  await page.getByRole('checkbox', { name: 'Complete Edited offline' }).check();
+  await page.getByRole('checkbox', { name: 'Complete Edited offline' }).click();
+  await expect(page.getByRole('checkbox', { name: 'Reopen Edited offline' })).toBeChecked();
   await page.getByRole('button', { name: 'Delete Saved online' }).click();
   await expect(page.getByText('Saved online', { exact: true })).toHaveCount(0);
   await page.reload();
@@ -143,7 +145,8 @@ test('clear completed leaves active todos intact', async ({ page }) => {
   await ready(page);
   await add(page, 'Keep active');
   await add(page, 'Finished task');
-  await page.getByRole('checkbox', { name: 'Complete Finished task' }).check();
+  await page.getByRole('checkbox', { name: 'Complete Finished task' }).click();
+  await expect(page.getByRole('checkbox', { name: 'Reopen Finished task' })).toBeChecked();
   page.once('dialog', dialog => dialog.accept());
   await page.getByRole('button', { name: 'Clear completed' }).click();
   await expect(page.getByText('Finished task', { exact: true })).toHaveCount(0);
