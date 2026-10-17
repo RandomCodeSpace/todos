@@ -4,7 +4,8 @@ const FILES = ['./', './index.html', './styles.css', './app.js', './model.js', '
 const ASSETS = new Set(FILES.map(path => new URL(path, self.registration.scope).href));
 
 self.addEventListener('install', event => {
-  event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(FILES)));
+  const requests = FILES.map(path => new Request(new URL(path, self.registration.scope), { cache: 'reload' }));
+  event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(requests)));
 });
 self.addEventListener('activate', event => {
   event.waitUntil((async () => {
