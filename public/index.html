@@ -7,7 +7,7 @@
   <meta name="description" content="A calm, private todo list that lives on your device. Works offline on iPhone and desktop.">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="Tuck">
   <meta name="format-detection" content="telephone=no">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' blob: data:; connect-src 'self'; worker-src 'self'; manifest-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'">
@@ -19,6 +19,7 @@
   <script type="module" src="./app.js"></script>
 </head>
 <body>
+  <div class="status-tint" aria-hidden="true"></div>
   <svg class="sprite" aria-hidden="true">
     <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4.5 4.5"/></symbol>
     <symbol id="i-more" viewBox="0 0 24 24"><path d="M5 8h14M5 12h14M5 16h9"/></symbol>

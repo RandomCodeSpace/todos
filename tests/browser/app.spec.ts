@@ -390,3 +390,24 @@ test('phone dock gestures switch views and open and close search', async ({ page
   await expect(page.locator('#shell')).not.toHaveClass(/searching/);
   await expect(page.getByLabel('Search tasks')).toHaveValue('');
 });
+
+test('an opaque strip owns the top edge so the status bar tint recovers after a sheet closes', async ({ page }) => {
+  await ready(page);
+  // Safari 26 samples the topmost fixed element at the top centre, ignoring pointer-events.
+  const topEdge = () => page.evaluate(() => {
+    const strip = document.querySelector<HTMLElement>('.status-tint')!;
+    strip.style.pointerEvents = 'auto';
+    const hit = document.elementFromPoint(innerWidth / 2, 4);
+    strip.style.pointerEvents = '';
+    return { owner: hit === strip ? 'strip' : hit?.tagName ?? '', color: getComputedStyle(strip).backgroundColor };
+  });
+  expect(await topEdge()).toEqual({ owner: 'strip', color: 'rgb(236, 238, 241)' });
+  await add(page, 'Tint check');
+  await page.getByRole('button', { name: 'Edit Tint check' }).click();
+  await expect(page.getByRole('dialog')).toBeVisible();
+  expect((await topEdge()).owner).toBe('DIALOG');
+  await page.getByRole('button', { name: 'Save changes' }).click();
+  await expect(page.getByRole('dialog')).toBeHidden();
+  // Saving re-renders through a view transition, whose overlay owns hit-testing until it ends.
+  await expect.poll(async () => (await topEdge()).owner).toBe('strip');
+});
