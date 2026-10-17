@@ -15,12 +15,14 @@ const channel = 'BroadcastChannel' in window ? new BroadcastChannel('randomcodes
 
 function reportError(message) {
   $('#notice').hidden = true;
-  $('#error').textContent = message;
-  $('#error').hidden = false;
+  const target = $('#edit-dialog').open ? $('#edit-error') : $('#error');
+  target.textContent = message;
+  target.hidden = false;
 }
 
 function notify(message, undo = false) {
   $('#error').hidden = true;
+  $('#edit-error').hidden = true;
   $('#notice-text').textContent = message;
   $('#undo').hidden = !undo;
   $('#notice').hidden = false;
@@ -28,7 +30,7 @@ function notify(message, undo = false) {
 
 function setBusy(value) {
   busy = value;
-  for (const control of document.querySelectorAll('#add-button, #new-todo, #export, #import, #import-file, #clear-completed, #undo, #edit-form button, #todo-list button, #todo-list input')) {
+  for (const control of document.querySelectorAll('#add-button, #new-todo, #export, #import, #import-file, #clear-completed, #undo, #edit-text, #edit-form button, #todo-list button, #todo-list input')) {
     control.disabled = value || !storageReady;
   }
   $('#add-form').setAttribute('aria-busy', String(value));
@@ -50,10 +52,19 @@ function iconButton(label, path, action) {
   return button;
 }
 
-function render() {
+function captureFocus() {
   const focused = document.activeElement;
-  const focusId = focused?.closest('.todo')?.dataset.id;
-  const focusLabel = focused?.getAttribute('data-control');
+  return { id: focused?.closest('.todo')?.dataset.id, control: focused?.getAttribute('data-control') };
+}
+
+function restoreFocus(focus) {
+  if (!focus?.id || !focus.control || $('#edit-dialog').open) return;
+  const row = [...$('#todo-list').children].find(item => item.dataset.id === focus.id);
+  (row?.querySelector(`[data-control="${focus.control}"]`) || $('[data-filter][aria-pressed="true"]')).focus({ preventScroll: true });
+}
+
+function render() {
+  const focus = captureFocus();
   const selected = selectTodos(todos, filter, $('#search').value);
   const fragment = document.createDocumentFragment();
   for (const todo of selected) {
@@ -76,6 +87,8 @@ function render() {
     actions.className = 'todo-actions';
     const edit = iconButton(`Edit ${todo.text}`, 'm14 5 5 5M4 20l5-1L20 8a3.5 3.5 0 0 0-5-5L4 14z', () => {
       editingId = todo.id;
+      $('#edit-error').hidden = true;
+      $('#error').hidden = true;
       $('#edit-text').value = todo.text;
       $('#edit-dialog').showModal();
       $('#edit-text').focus();
@@ -104,27 +117,34 @@ function render() {
   $('#empty-description').textContent = searching ? 'Try another word or clear your search.' : filter === 'completed' ? 'Your completed todos will be here.' : todos.length ? 'Everything here is taken care of.' : 'A plan, an idea, something for later. Your list is ready when you are.';
   for (const button of document.querySelectorAll('[data-filter]')) button.setAttribute('aria-pressed', String(button.dataset.filter === filter));
   setBusy(busy);
-  if (focusId && focusLabel) {
-    const row = [...$('#todo-list').children].find(item => item.dataset.id === focusId);
-    (row?.querySelector(`[data-control="${focusLabel}"]`) || $('[data-filter][aria-pressed="true"]')).focus({ preventScroll: true });
-  }
+  if (!busy) restoreFocus(focus);
 }
 
 async function refresh() { todos = await storage.listTodos(); render(); }
 
 async function mutate(operation, onSuccess) {
   if (busy || !storageReady) return;
+  const focus = $('#edit-dialog').open ? { id: editingId, control: 'edit' } : captureFocus();
   setBusy(true);
   $('#error').hidden = true;
+  $('#edit-error').hidden = true;
   try {
     await operation();
-    await refresh();
+  } catch (error) {
+    render();
+    reportError(error.name === 'NotFoundError' ? error.message : 'Your change could not be saved. Check available storage and try again. Your draft is still here.');
+    setBusy(false);
+    restoreFocus(focus);
+    if ($('#edit-dialog').open) $('#edit-text').focus();
+    return;
+  }
+  try {
+    let refreshFailed = false;
+    try { await refresh(); } catch { refreshFailed = true; }
     channel?.postMessage('changed');
     onSuccess?.();
-  } catch {
-    render();
-    reportError('Your change could not be saved. Check available storage and try again. Your draft is still here.');
-  } finally { setBusy(false); }
+    if (refreshFailed) reportError('Your change was saved, but the list could not refresh. Reload the app to see it.');
+  } finally { setBusy(false); restoreFocus(focus); }
 }
 
 $('#add-form').addEventListener('submit', event => {

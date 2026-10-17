@@ -21,10 +21,11 @@ async function transact(mode, operation) {
   return new Promise((resolve, reject) => {
     const transaction = db.transaction('todos', mode);
     let result;
+    let failure;
     transaction.oncomplete = () => resolve(result);
-    transaction.onabort = () => reject(transaction.error || new Error('Storage transaction was cancelled.'));
+    transaction.onabort = () => reject(failure || transaction.error || new Error('Storage transaction was cancelled.'));
     transaction.onerror = () => reject(transaction.error || new Error('Storage transaction failed.'));
-    try { operation(transaction.objectStore('todos'), value => { result = value; }); }
+    try { operation(transaction.objectStore('todos'), value => { result = value; }, error => { failure = error; transaction.abort(); }); }
     catch (error) { transaction.abort(); reject(error); }
   });
 }
@@ -39,10 +40,11 @@ export function listTodos() {
 export function addTodo(todo) { return transact('readwrite', store => store.add(todo)); }
 
 export function changeTodo(id, changes) {
-  return transact('readwrite', store => {
+  return transact('readwrite', (store, done, abort) => {
     const request = store.get(id);
     request.onsuccess = () => {
-      if (request.result) store.put({ ...request.result, ...changes, updatedAt: Date.now() });
+      if (!request.result) { abort(new DOMException('This todo was deleted in another tab. Copy your draft into a new todo to keep it.', 'NotFoundError')); return; }
+      store.put({ ...request.result, ...changes, updatedAt: Date.now() });
     };
   });
 }

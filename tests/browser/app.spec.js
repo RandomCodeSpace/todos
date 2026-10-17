@@ -151,3 +151,70 @@ test('clear completed leaves active todos intact', async ({ page }) => {
   await expect(page.getByText('Keep active', { exact: true })).toBeVisible();
   await expect(page.getByText('Finished task', { exact: true })).toHaveCount(0);
 });
+
+test('an edit deleted in another tab keeps the draft and reports the conflict', async ({ page, context }) => {
+  await ready(page);
+  await add(page, 'Original todo');
+  await page.getByRole('button', { name: 'Edit Original todo' }).click();
+  await page.getByLabel('Edit todo').fill('A draft worth keeping');
+  const second = await context.newPage();
+  await ready(second);
+  await second.getByRole('button', { name: 'Delete Original todo' }).click();
+  await expect(second.locator('.todo-text')).toHaveCount(0);
+  await page.getByRole('button', { name: 'Save changes' }).click();
+  await expect(page.getByRole('dialog')).toBeVisible();
+  await expect(page.getByRole('dialog').getByRole('alert')).toContainText('deleted in another tab');
+  await expect(page.getByLabel('Edit todo')).toHaveValue('A draft worth keeping');
+});
+
+test('edit storage errors are accessible inside the modal', async ({ page }) => {
+  await ready(page);
+  await add(page, 'Original todo');
+  await page.getByRole('button', { name: 'Edit Original todo' }).click();
+  await page.getByLabel('Edit todo').fill('My changed draft');
+  await page.evaluate(() => {
+    const original = IDBDatabase.prototype.transaction;
+    IDBDatabase.prototype.transaction = function (name, mode, ...args) {
+      if (mode === 'readwrite') throw new DOMException('Storage full', 'QuotaExceededError');
+      return original.call(this, name, mode, ...args);
+    };
+  });
+  await page.getByRole('button', { name: 'Save changes' }).click();
+  await expect(page.getByRole('dialog').getByRole('alert')).toContainText('could not be saved');
+  await expect(page.getByLabel('Edit todo')).toHaveValue('My changed draft');
+});
+
+test('a failed refresh after a committed add does not invite a duplicate', async ({ page }) => {
+  await ready(page);
+  await page.evaluate(() => {
+    const original = IDBObjectStore.prototype.getAll;
+    let failOnce = true;
+    IDBObjectStore.prototype.getAll = function (...args) {
+      if (failOnce) { failOnce = false; throw new Error('Read unavailable'); }
+      return original.apply(this, args);
+    };
+  });
+  await page.getByLabel('New todo').fill('Already committed');
+  await page.getByRole('button', { name: 'Add todo', exact: true }).click();
+  await expect(page.getByLabel('New todo')).toHaveValue('');
+  await expect(page.getByRole('alert')).toContainText('was saved');
+  await page.reload();
+  await expect(page.locator('.todo-text')).toHaveCount(1);
+  await expect(page.getByText('Already committed', { exact: true })).toBeVisible();
+});
+
+test('keyboard focus survives toggle, edit and delete', async ({ page }) => {
+  await ready(page);
+  await add(page, 'Keyboard task');
+  const checkbox = page.getByRole('checkbox', { name: 'Complete Keyboard task' });
+  await checkbox.focus();
+  await page.keyboard.press('Space');
+  await expect(page.getByRole('checkbox', { name: 'Reopen Keyboard task' })).toBeFocused();
+  await page.getByRole('button', { name: 'Edit Keyboard task' }).click();
+  await page.getByLabel('Edit todo').fill('Edited with keyboard');
+  await page.getByRole('button', { name: 'Save changes' }).click();
+  await expect(page.getByRole('button', { name: 'Edit Edited with keyboard' })).toBeFocused();
+  await page.getByRole('button', { name: 'Delete Edited with keyboard' }).focus();
+  await page.keyboard.press('Enter');
+  await expect(page.getByRole('button', { name: /^All/ })).toBeFocused();
+});

@@ -117,6 +117,7 @@ dialog { border: 1px solid var(--line); border-radius: 22px; padding: 28px; widt
 dialog::backdrop { background: #20304755; }
 dialog h2 { font-size: 25px; letter-spacing: -.8px; margin: 0 0 20px; font-weight: 650; }
 dialog p { font-size: 15px; line-height: 1.7; color: var(--muted); }
+dialog .inline-error { color: #8b283a; font-size: 14px; }
 dialog label { display: block; font-size: 13px; margin-bottom: 8px; }
 dialog textarea { width: 100%; padding: 12px; border: 1px solid #bfcde5; border-radius: 12px; color: var(--ink); }
 .dialog-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 20px; }
