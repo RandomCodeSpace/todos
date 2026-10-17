@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { normalizeText, parseBackup, selectTodos, countViews, viewOf, addDays, nextWeekend, localDate } from '../public/model.js';
+import { normalizeText, parseBackup, selectTodos, countViews, viewOf, addDays, nextWeekend, localDate } from '../src/model.ts';
 
 const today = '2026-10-17';
 const todo = { id: 'one', text: 'Plan the day', completed: false, createdAt: 100, updatedAt: 100 };

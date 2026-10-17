@@ -13,8 +13,11 @@ viewport sizing and at least 16px form text. Prevent overscroll bounce and
 input-focus zoom without disabling accessibility pinch zoom. Physical iPhone
 keyboard, home-screen installation and native bounce remain device checks.
 
-Implementation choice: native JavaScript modules, HTML and CSS, with no runtime
-dependencies. Playwright is an exact-pinned Apache-2.0 development dependency.
+Implementation choice: strict TypeScript compiled by `tsc` to native ES modules
+(no bundler), plus HTML and CSS, with no runtime dependencies. The service worker
+compiles separately as a classic script with WebWorker types. TypeScript
+(Apache-2.0), @types/node (MIT) and Playwright (Apache-2.0) are exact-pinned
+development dependencies.
 
 Design (light mode), after Jakub Antalik's Dona references on Dribbble: cool
 grey canvas (#eceef1), white cards (radius 16, 8px gaps), ink (#1f2328),

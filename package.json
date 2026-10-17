@@ -4,13 +4,22 @@
   "private": true,
   "type": "module",
   "license": "MIT",
-  "engines": { "node": ">=24" },
+  "engines": {
+    "node": ">=24"
+  },
   "scripts": {
-    "dev": "node scripts/serve.mjs",
-    "build": "node scripts/build.mjs",
-    "lint": "node scripts/check.mjs",
-    "test": "node --test --experimental-test-coverage tests/*.test.mjs",
+    "compile": "tsc -p tsconfig.app.json && tsc -p tsconfig.sw.json",
+    "dev": "npm run compile && node scripts/serve.ts",
+    "build": "npm run compile && node scripts/build.ts",
+    "lint": "node scripts/check.ts && tsc -p tsconfig.app.json --noEmit && tsc -p tsconfig.sw.json --noEmit && tsc -p tsconfig.node.json && oxlint --type-aware --deny-warnings",
+    "test": "node --test --experimental-test-coverage tests/*.test.ts",
     "test:e2e": "playwright test"
   },
-  "devDependencies": { "@playwright/test": "1.64.1" }
+  "devDependencies": {
+    "@playwright/test": "1.64.1",
+    "@types/node": "24.19.2",
+    "oxlint": "1.88.0",
+    "oxlint-tsgolint": "7.0.2004",
+    "typescript": "7.0.2"
+  }
 }

@@ -12,6 +12,10 @@ A private, offline-ready todo PWA for iPhone and desktop.
   add, swipe a task right to complete or left to delete (with undo), hold a
   task for quick actions (Today, Tomorrow, Weekend, Important, Delete), swipe a
   sheet down to close it, and swipe down on the composer to hide the keyboard.
+- Thumb-first phone layout: views, search, settings and the composer sit in a
+  bottom dock. Slide along the tab bar to switch views, swipe it up to search,
+  swipe the search field down to close it, and swipe left or right above or
+  between tasks to move to the next or previous view.
 - Floating composer with Today, Tomorrow, Weekend or any date, plus Important.
   Return adds and keeps the keyboard open.
 - Task sheet for text, due date, importance and a note. Closing it saves;
@@ -59,9 +63,11 @@ npm ci --ignore-scripts
 npm run dev
 ```
 
-Open http://127.0.0.1:4173/tuck/. For a fresh development session, unregister the
-service worker in browser developer tools after changing cached source files.
-Production builds use a content-derived cache version.
+Open http://127.0.0.1:4173/tuck/. Application code is TypeScript in `src/`;
+`npm run dev` compiles it into `.build/` and serves it with the static files in
+`public/`. Run `npm run compile` after changing `src/`. For a fresh development
+session, unregister the service worker in browser developer tools after changing
+cached source files. Production builds use a content-derived cache version.
 
 ```sh
 npm run lint
@@ -71,8 +77,10 @@ npm run test:e2e
 npm run build
 ```
 
-The build copies `public/` into `dist/` and versions the offline cache. No bundler
-or runtime dependency is required. Playwright is the sole development dependency.
+The build compiles `src/` with `tsc`, copies `public/` and the compiled scripts
+into `dist/`, and versions the offline cache. No bundler or runtime dependency is
+required. Development dependencies are TypeScript, Node type definitions and
+Playwright. Node runs the TypeScript build scripts and tests directly.
 
 ## Deployment and controls
 
