@@ -1,0 +1,15 @@
+{
+  "id": "./",
+  "name": "Todos - A little more headspace",
+  "short_name": "Todos",
+  "description": "Your private, offline-ready todo list.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f2f5fb",
+  "theme_color": "#f2f5fb",
+  "icons": [
+    { "src": "./icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "./icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}
