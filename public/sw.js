@@ -1,4 +1,4 @@
-const PREFIX = `todos:${self.registration.scope}:`;
+const PREFIX = `tuck:${self.registration.scope}:`;
 const CACHE = `${PREFIX}__BUILD_VERSION__`;
 const FILES = ['./', './index.html', './styles.css', './app.js', './model.js', './storage.js', './manifest.webmanifest', './icon.svg', './icons/apple-touch-icon.png', './icons/icon-192.png', './icons/icon-512.png'];
 const ASSETS = new Set(FILES.map(path => new URL(path, self.registration.scope).href));

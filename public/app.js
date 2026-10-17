@@ -11,6 +11,7 @@ let storageReady = false;
 let deferredInstall;
 let registration;
 let refreshing = false;
+// Keep the original channel so existing installations see changes from Tuck.
 const channel = 'BroadcastChannel' in window ? new BroadcastChannel('randomcodespace-todos') : null;
 
 function reportError(message) {
@@ -189,7 +190,7 @@ $('#export').addEventListener('click', async () => {
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
-    link.download = `todos-${new Date().toISOString().slice(0, 10)}.json`;
+    link.download = `tuck-${new Date().toISOString().slice(0, 10)}.json`;
     document.body.append(link);
     link.click();
     link.remove();

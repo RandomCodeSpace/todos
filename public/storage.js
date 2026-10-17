@@ -3,10 +3,11 @@ let database;
 function openDatabase() {
   if (database) return database;
   database = new Promise((resolve, reject) => {
+    // Preserve the original database name so the rebrand retains existing lists.
     const request = indexedDB.open('randomcodespace-todos', 1);
     request.onupgradeneeded = () => request.result.createObjectStore('todos', { keyPath: 'id' });
     request.onerror = () => { database = undefined; reject(request.error); };
-    request.onblocked = () => { database = undefined; reject(new Error('Close other Todos tabs and try again.')); };
+    request.onblocked = () => { database = undefined; reject(new Error('Close other Tuck tabs and try again.')); };
     request.onsuccess = () => {
       const db = request.result;
       db.onversionchange = () => { db.close(); database = undefined; };

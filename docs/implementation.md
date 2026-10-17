@@ -1,9 +1,9 @@
-# Offline todos implementation
+# Tuck offline implementation
 
 ## Specification
 
 Build an installable todo PWA for iPhone Safari and desktop browsers, deployed
-to https://randomcodespace.github.io/todos/. Store todos only in IndexedDB.
+to https://randomcodespace.github.io/tuck/. Store todos only in IndexedDB.
 Support create, edit, complete, delete, filtering, search and portable JSON
 backups. Cache the entire application for offline reloads after the first
 successful online visit. Do not use third-party runtime services or fonts.
