@@ -3,12 +3,14 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
-  <meta name="theme-color" content="#f2f5fb">
-  <meta name="description" content="A little space for what matters. Private, offline-ready todos for your phone and desktop.">
+  <meta name="theme-color" content="#eceef1">
+  <meta name="description" content="A calm, private todo list that lives on your device. Works offline on iPhone and desktop.">
   <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="Tuck">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self'; connect-src 'self'; worker-src 'self'; manifest-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'">
+  <meta name="format-detection" content="telephone=no">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' blob: data:; connect-src 'self'; worker-src 'self'; manifest-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'">
   <link rel="manifest" href="./manifest.webmanifest">
   <link rel="icon" type="image/svg+xml" href="./icon.svg">
   <link rel="apple-touch-icon" href="./icons/apple-touch-icon.png">
@@ -17,42 +19,131 @@
   <script type="module" src="./app.js"></script>
 </head>
 <body>
-  <div class="app-shell">
-    <header class="app-header">
-      <a class="brand" href="./" aria-label="Tuck home"><span class="brand-mark" aria-hidden="true"></span>tuck<span class="brand-period">.</span></a>
-      <div class="header-right"><span id="connection" class="connection"><span class="status-dot"></span><span id="connection-label">On your device</span></span><button id="install" class="button subtle" type="button">Install app</button></div>
-    </header>
-    <main class="workspace" id="workspace">
-      <div class="workspace-inner">
-        <section class="notebook" aria-labelledby="page-title">
-          <div class="heading-row"><div><p class="date" id="today">Your personal space</p><h1 id="page-title">A little more<br>headspace.</h1></div><span class="heading-symbol" aria-hidden="true"><span></span><span></span><span></span></span></div>
-          <p class="intro">Get it out of your head. Take it one thing at a time.</p>
-          <form id="add-form" class="composer">
-            <label for="new-todo" class="sr-only">New todo</label>
-            <textarea id="new-todo" name="todo" rows="2" maxlength="2000" placeholder="What's on your mind?" required disabled></textarea>
-            <div class="composer-footer"><span class="composer-hint">Make room for what matters.</span><button id="add-button" class="button primary" type="submit" disabled><span aria-hidden="true">+</span> Add todo</button></div>
-          </form>
-          <div class="list-tools">
-            <div class="filters" role="group" aria-label="Filter todos"><button type="button" data-filter="all" aria-pressed="true">All <span id="all-count">0</span></button><button type="button" data-filter="active" aria-pressed="false">Active <span id="active-count">0</span></button><button type="button" data-filter="completed" aria-pressed="false">Done <span id="done-count">0</span></button></div>
-            <label class="search"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"></circle><path d="m16 16 5 5"></path></svg><input id="search" type="search" aria-label="Search todos" placeholder="Find a todo" maxlength="2000"></label>
+  <svg class="sprite" aria-hidden="true">
+    <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4.5 4.5"/></symbol>
+    <symbol id="i-more" viewBox="0 0 24 24"><path d="M5 8h14M5 12h14M5 16h9"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="m6 12.5 4 4 8-9"/></symbol>
+    <symbol id="i-trash" viewBox="0 0 24 24"><path d="M4.5 7h15M9.5 7V4.5h5V7M6.5 7l1 12.5h9l1-12.5M10 11v5M14 11v5"/></symbol>
+    <symbol id="i-flag" viewBox="0 0 24 24"><path d="M6 21V4M6 4.5c4-2 8 2 12 0v9c-4 2-8-2-12 0"/></symbol>
+    <symbol id="i-share" viewBox="0 0 24 24"><path d="M12 3.5v11M8 7.5l4-4 4 4M6.5 11H5v9.5h14V11h-1.5"/></symbol>
+    <symbol id="i-close" viewBox="0 0 24 24"><path d="m6.5 6.5 11 11M17.5 6.5l-11 11"/></symbol>
+    <symbol id="i-cal" viewBox="0 0 24 24"><rect x="4" y="5.5" width="16" height="14.5" rx="3"/><path d="M4 10h16M8.5 3.5v4M15.5 3.5v4"/></symbol>
+    <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2.5v2M12 19.5v2M4.6 4.6 6 6M18 18l1.4 1.4M2.5 12h2M19.5 12h2M4.6 19.4 6 18M18 6l1.4-1.4"/></symbol>
+    <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M12 19V5M6 11l6-6 6 6"/></symbol>
+    <symbol id="i-down" viewBox="0 0 24 24"><path d="M12 5v14M6 13l6 6 6-6"/></symbol>
+    <symbol id="i-chevron" viewBox="0 0 24 24"><path d="m7 10 5 5 5-5"/></symbol>
+  </svg>
+
+  <div class="shell" id="shell">
+    <aside class="side">
+      <a class="brand" href="./" aria-label="Tuck home"><span class="brand-mark" aria-hidden="true"><svg><use href="#i-check"/></svg></span>Tuck</a>
+      <label class="search-field" id="search-bar"><svg aria-hidden="true"><use href="#i-search"/></svg><input id="search" type="search" aria-label="Search tasks" placeholder="Search" maxlength="200" enterkeyhint="search" autocomplete="off"><button id="cancel-search" type="button" class="search-cancel">Cancel</button></label>
+      <nav class="views" id="views" aria-label="Views">
+        <button type="button" data-view="today" aria-pressed="true"><span class="ring ring-today" aria-hidden="true"></span><span class="view-name">Today</span> <span class="count" id="count-today"></span></button>
+        <button type="button" data-view="upcoming" aria-pressed="false"><span class="ring ring-upcoming" aria-hidden="true"></span><span class="view-name">Upcoming</span> <span class="count" id="count-upcoming"></span></button>
+        <button type="button" data-view="anytime" aria-pressed="false"><span class="ring ring-anytime" aria-hidden="true"></span><span class="view-name">Anytime</span> <span class="count" id="count-anytime"></span></button>
+        <button type="button" data-view="done" aria-pressed="false"><span class="ring ring-done" aria-hidden="true"></span><span class="view-name">Done</span> <span class="count" id="count-done"></span></button>
+      </nav>
+      <p class="side-status"><span id="rail-status">Saved on this device</span></p>
+    </aside>
+
+    <section class="panel">
+      <header class="topbar">
+        <div class="title-block">
+          <p class="eyebrow" id="today-label">Today</p>
+          <h1 id="view-title">Today</h1>
+        </div>
+        <div class="top-actions">
+          <button id="open-search" class="icon-button" type="button" aria-label="Search"><svg aria-hidden="true"><use href="#i-search"/></svg></button>
+          <button id="open-settings" class="icon-button" type="button" aria-label="Settings"><svg aria-hidden="true"><use href="#i-more"/></svg></button>
+        </div>
+      </header>
+      <p class="subtitle" id="summary" aria-live="polite"></p>
+      <button id="update-app" class="update-pill" type="button" hidden>Update available</button>
+
+      <main class="list-area" id="workspace">
+        <div class="pull" id="pull" aria-hidden="true"><span class="pull-box"></span><span id="pull-label">Pull to add a task</span></div>
+        <ul id="todo-list" class="todo-list" aria-label="Tasks"></ul>
+        <div id="empty" class="empty"><p class="empty-title" id="empty-title">A clear day</p><p id="empty-description">Pull down or tap below to add a task.</p></div>
+      </main>
+
+      <form id="add-form" class="composer" autocomplete="off">
+        <div class="chips" role="group" aria-label="When">
+          <button type="button" class="chip" data-due="today" aria-pressed="false">Today</button>
+          <button type="button" class="chip" data-due="tomorrow" aria-pressed="false">Tomorrow</button>
+          <button type="button" class="chip" data-due="weekend" aria-pressed="false">Weekend</button>
+          <label class="chip chip-date" id="pick-chip"><svg aria-hidden="true"><use href="#i-cal"/></svg><span id="pick-label">Date</span><input id="new-due" type="date" aria-label="Pick a due date"></label>
+          <button type="button" class="chip chip-flag" id="new-flag" aria-pressed="false" aria-label="Important"><svg aria-hidden="true"><use href="#i-flag"/></svg></button>
+        </div>
+        <div class="composer-row">
+          <div class="composer-field">
+            <label for="new-todo" class="sr-only">New task</label>
+            <input id="new-todo" name="todo" type="text" maxlength="2000" placeholder="Write a new task" enterkeyhint="done" autocapitalize="sentences" autocorrect="on" spellcheck="true" required disabled>
+            <button id="add-button" class="add-button" type="submit" aria-label="Add task" disabled><svg aria-hidden="true"><use href="#i-arrow"/></svg></button>
           </div>
-          <ul id="todo-list" class="todo-list" aria-label="Todo list"></ul>
-          <div id="empty" class="empty"><div class="empty-mark" aria-hidden="true"><span></span><span></span><span></span></div><h2 id="empty-title">Start with one small thing</h2><p id="empty-description">A plan, an idea, something for later.<br>Your list is ready when you are.</p></div>
-          <div class="list-footer"><span id="remaining">No rush. Start wherever you like.</span><button id="clear-completed" class="text-button" type="button" hidden>Clear completed</button></div>
-        </section>
-        <aside class="sidebar" aria-label="Your space">
-          <section class="space-card"><span class="small-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="6" y="10" width="12" height="10" rx="3"></rect><path d="M9 10V7a3 3 0 0 1 6 0v3"></path></svg></span><h2>Just you and your list.</h2><p>No account. No noise.<br>Your todos stay on this device.</p><div class="offline-line"><span class="status-dot"></span><span id="offline-status" role="status">Preparing offline mode...</span></div><button id="update-app" class="text-button" type="button" hidden>Update available</button></section>
-          <section class="backup-tools" aria-labelledby="backup-title"><h2 id="backup-title">Keep a copy</h2><p>A small backup. A little peace of mind.</p><div><button id="export" class="button secondary" type="button" disabled>Export backup</button><button id="import" class="button subtle" type="button" disabled>Import</button><input id="import-file" type="file" accept=".json,application/json" hidden></div><p class="storage-note">Stored in this browser. Export a backup before clearing site data.</p><button id="persist" class="text-button" type="button" hidden>Protect local storage</button><p id="persistence-status" class="storage-note" role="status"></p></section>
-          <p class="quiet-note">Less to hold.<br>More room to think.</p>
-        </aside>
-      </div>
-      <footer class="app-footer"><span>A little space, all yours.</span><a href="https://github.com/RandomCodeSpace/tuck" target="_blank" rel="noopener noreferrer">Made to stay simple <span aria-hidden="true">&#8599;</span></a></footer>
-    </main>
+        </div>
+      </form>
+    </section>
   </div>
-  <div id="error" class="error-message" role="alert" hidden></div>
-  <div id="notice" class="notice" role="status" hidden><span id="notice-text"></span><button id="undo" type="button" hidden>Undo</button><button id="dismiss-notice" type="button" aria-label="Dismiss notification">&#215;</button></div>
-  <dialog id="edit-dialog" aria-labelledby="edit-title"><form id="edit-form"><h2 id="edit-title">A little adjustment</h2><label for="edit-text">Edit todo</label><textarea id="edit-text" rows="5" maxlength="2000" aria-describedby="edit-error" required></textarea><p id="edit-error" class="inline-error" role="alert" hidden></p><div class="dialog-actions"><button id="cancel-edit" class="button secondary" type="button">Cancel</button><button class="button primary" type="submit">Save changes</button></div></form></dialog>
-  <dialog id="install-dialog" aria-labelledby="install-title"><h2 id="install-title">Your list, one tap away.</h2><p>On iPhone, open this page in Safari. Tap Share, then <strong>Add to Home Screen</strong>.</p><p>On desktop, use your browser's install option in the address bar or menu, when available.</p><p>Open the app online once and wait for "Ready for offline" before using it without a connection.</p><button id="close-install" class="button primary" type="button">Got it</button></dialog>
-  <noscript><p class="error-message">Enable JavaScript to use Tuck. Your list is stored locally in this browser.</p></noscript>
+
+  <div id="error" class="toast toast-error" role="alert" hidden></div>
+  <div id="notice" class="toast" role="status" hidden><span id="notice-text"></span><button id="undo" type="button" hidden>Undo</button><button id="dismiss-notice" type="button" aria-label="Dismiss notification"><svg aria-hidden="true"><use href="#i-close"/></svg></button></div>
+
+  <dialog id="edit-dialog" class="sheet" aria-labelledby="edit-title">
+    <form id="edit-form">
+      <div class="grabber" aria-hidden="true"></div>
+      <div class="sheet-head"><h2 id="edit-title" class="sr-only" tabindex="-1" autofocus>Task</h2><button id="cancel-edit" class="text-button" type="button">Cancel</button><button class="text-button strong" type="submit" aria-label="Save changes">Done</button></div>
+      <div class="sheet-body">
+        <div class="title-row"><span class="box" aria-hidden="true"></span><label for="edit-text" class="sr-only">Edit task</label><textarea id="edit-text" rows="1" maxlength="2000" aria-describedby="edit-error" enterkeyhint="done" autocapitalize="sentences" required></textarea></div>
+        <p id="edit-error" class="inline-error" role="alert" hidden></p>
+        <div class="info">
+          <div class="info-row"><span>Due date</span><span class="select-pill"><input id="edit-due" type="date" aria-label="Due date"><button id="clear-due" class="clear-due" type="button" aria-label="Remove due date"><svg aria-hidden="true"><use href="#i-close"/></svg></button></span></div>
+          <div class="quick-dates" role="group" aria-label="Quick due dates"><button type="button" class="chip" data-edit-due="today">Today</button><button type="button" class="chip" data-edit-due="tomorrow">Tomorrow</button><button type="button" class="chip" data-edit-due="weekend">Weekend</button></div>
+          <label class="info-row"><span>Important</span><input id="edit-flag" type="checkbox" switch class="switch"></label>
+        </div>
+        <label for="edit-notes" class="sr-only">Notes</label>
+        <textarea id="edit-notes" class="note" rows="4" maxlength="4000" placeholder="Write a note..."></textarea>
+        <div class="sheet-actions"><button id="share-task" class="soft-button" type="button">Share</button><button id="delete-task" class="soft-button danger" type="button">Delete task</button></div>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="actions-dialog" class="sheet action-sheet" aria-labelledby="actions-title">
+    <div class="grabber" aria-hidden="true"></div>
+    <p class="action-title" id="actions-title" tabindex="-1" autofocus></p>
+    <div class="action-grid">
+      <button type="button" data-action="today"><svg aria-hidden="true"><use href="#i-sun"/></svg>Today</button>
+      <button type="button" data-action="tomorrow"><svg aria-hidden="true"><use href="#i-arrow"/></svg>Tomorrow</button>
+      <button type="button" data-action="weekend"><svg aria-hidden="true"><use href="#i-cal"/></svg>Weekend</button>
+      <button type="button" data-action="flag"><svg aria-hidden="true"><use href="#i-flag"/></svg><span id="action-flag-label">Important</span></button>
+    </div>
+    <button type="button" class="soft-button danger wide" data-action="delete">Delete task</button>
+  </dialog>
+
+  <dialog id="settings-dialog" class="sheet" aria-labelledby="settings-title">
+    <div class="grabber" aria-hidden="true"></div>
+    <div class="sheet-head"><h2 id="settings-title" tabindex="-1" autofocus>Settings</h2><button id="close-settings" class="text-button strong" type="button">Done</button></div>
+    <div class="sheet-body">
+      <div class="group">
+        <button id="export" class="row-button" type="button" disabled><span>Export backup</span><svg aria-hidden="true"><use href="#i-share"/></svg></button>
+        <button id="import" class="row-button" type="button" disabled><span>Restore from backup</span></button>
+        <input id="import-file" type="file" accept=".json,application/json" hidden>
+        <button id="persist" class="row-button" type="button" hidden><span>Protect local storage</span></button>
+        <label class="row-button" id="badge-row" hidden><span>Show count on app icon</span><input id="badge-toggle" type="checkbox" switch class="switch"></label>
+        <button id="clear-completed" class="row-button danger" type="button" hidden><span>Clear completed</span></button>
+      </div>
+      <p class="group-note" id="persistence-status" role="status">Tasks stay in this browser on this device. Export a backup now and then.</p>
+      <div class="group">
+        <div class="row-static"><span>Offline</span><span id="offline-status" class="muted" role="status">Preparing offline mode...</span></div>
+        <button id="install" class="row-button" type="button" hidden><span>Add to Home Screen</span></button>
+      </div>
+      <div id="install-help" class="group-note" hidden><p>In Safari, tap <strong>Share</strong>, then <strong>Add to Home Screen</strong>. Tuck opens full screen and works offline.</p></div>
+      <p class="group-note">Pull the list down to add. Swipe a task right to complete it, left to delete it, or hold it for quick actions. Swipe a sheet down to close it. Keys: <kbd>N</kbd> new, <kbd>/</kbd> search, <kbd>1</kbd>-<kbd>4</kbd> views.</p>
+    </div>
+  </dialog>
+
+  <label class="haptic" aria-hidden="true"><input id="haptic" type="checkbox" switch tabindex="-1"></label>
+  <noscript><p class="toast toast-error">Enable JavaScript to use Tuck. Your list is stored locally in this browser.</p></noscript>
 </body>
 </html>
