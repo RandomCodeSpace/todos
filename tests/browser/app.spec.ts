@@ -1,21 +1,24 @@
 import { test, expect } from '@playwright/test';
+import type { Page } from '@playwright/test';
 
-async function add(page, text) {
+type Storage = typeof import('../../src/storage.ts');
+
+async function add(page: Page, text: string) {
   await page.getByLabel('New task').fill(text);
   await page.getByRole('button', { name: 'Add task', exact: true }).click();
   await expect(page.locator('.todo-text', { hasText: text })).toBeVisible();
 }
 // Touch layouts delete from the task sheet; pointer layouts also show a row button.
-async function remove(page, text) {
+async function remove(page: Page, text: string) {
   await page.getByRole('button', { name: `Edit ${text}`, exact: true }).click();
   await page.getByRole('dialog').getByRole('button', { name: 'Delete task', exact: true }).click();
 }
-function view(page, name) { return page.getByRole('navigation', { name: 'Views' }).getByRole('button', { name: new RegExp(`^${name}`) }); }
-async function openSettings(page) {
+function view(page: Page, name: string) { return page.getByRole('navigation', { name: 'Views' }).getByRole('button', { name: new RegExp(`^${name}`) }); }
+async function openSettings(page: Page) {
   await page.getByRole('button', { name: 'Settings' }).click();
   await expect(page.getByRole('dialog')).toBeVisible();
 }
-async function ready(page) {
+async function ready(page: Page) {
   await page.goto('./');
   await expect(page.getByLabel('New task')).toBeEnabled();
 }
@@ -64,9 +67,9 @@ test('offline launch and CRUD use IndexedDB', async ({ page, context }) => {
   await view(page, 'Done').click();
   await expect(page.getByText('Edited offline', { exact: true })).toBeVisible();
   await expect(page.getByText('Saved online', { exact: true })).toHaveCount(0);
-  const stored = await page.evaluate(async () => (await import('./storage.js')).listTodos());
+  const stored = await page.evaluate(async () => { const url = './storage.js'; return ((await import(url)) as Storage).listTodos(); });
   expect(stored).toHaveLength(1);
-  expect(stored[0].completed).toBe(true);
+  expect(stored[0]?.completed).toBe(true);
 });
 
 test('untrusted text is literal and search works', async ({ page }) => {
@@ -120,16 +123,16 @@ test('unavailable IndexedDB has an honest error state', async ({ page }) => {
 test('mobile sizing and scroll controls keep inputs usable', async ({ page }) => {
   await ready(page);
   for (let index = 0; index < 12; index++) await add(page, `Task number ${index} with a fairly long description to wrap`);
-  for (const [width, height] of [[320, 568], [375, 667], [393, 852], [1280, 720]]) {
+  for (const [width, height] of [[320, 568], [375, 667], [393, 852], [1280, 720]] as const) {
     await page.setViewportSize({ width, height });
-    await page.waitForFunction(() => document.querySelector('#add-form').getBoundingClientRect().bottom <= innerHeight);
+    await page.waitForFunction(() => document.querySelector('#add-form')!.getBoundingClientRect().bottom <= innerHeight);
     const layout = await page.evaluate(() => ({
       overflow: document.documentElement.scrollWidth > innerWidth || document.documentElement.scrollHeight > innerHeight,
-      composerVisible: document.querySelector('#add-form').getBoundingClientRect().bottom <= innerHeight,
-      font: parseFloat(getComputedStyle(document.querySelector('#new-todo')).fontSize),
-      overscroll: getComputedStyle(document.querySelector('.list-area')).getPropertyValue('overscroll-behavior-y'),
+      composerVisible: document.querySelector('#add-form')!.getBoundingClientRect().bottom <= innerHeight,
+      font: parseFloat(getComputedStyle(document.querySelector('#new-todo')!).fontSize),
+      overscroll: getComputedStyle(document.querySelector('.list-area')!).getPropertyValue('overscroll-behavior-y'),
       supportsOverscroll: CSS.supports('overscroll-behavior', 'none'),
-      viewport: document.querySelector('meta[name=viewport]').content
+      viewport: document.querySelector<HTMLMetaElement>('meta[name=viewport]')!.content
     }));
     expect(layout.overflow).toBe(false);
     expect(layout.composerVisible).toBe(true);
@@ -138,7 +141,7 @@ test('mobile sizing and scroll controls keep inputs usable', async ({ page }) =>
     expect(layout.viewport).not.toContain('user-scalable=no');
   }
   const prevented = await page.evaluate(() => {
-    const target = document.querySelector('.list-area');
+    const target = document.querySelector('.list-area')!;
     target.scrollTop = 0;
     const start = new Event('touchstart', { bubbles: true });
     Object.defineProperty(start, 'touches', { value: [{ clientX: 50, clientY: 100 }] });
@@ -197,6 +200,7 @@ test('edit storage errors are accessible inside the modal', async ({ page }) => 
   await page.getByRole('button', { name: 'Edit Original todo' }).click();
   await page.getByLabel('Edit task').fill('My changed draft');
   await page.evaluate(() => {
+    // oxlint-disable-next-line typescript/unbound-method -- re-invoked below with the original receiver.
     const original = IDBDatabase.prototype.transaction;
     IDBDatabase.prototype.transaction = function (name, mode, ...args) {
       if (mode === 'readwrite') throw new DOMException('Storage full', 'QuotaExceededError');
@@ -211,6 +215,7 @@ test('edit storage errors are accessible inside the modal', async ({ page }) => 
 test('a failed refresh after a committed add does not invite a duplicate', async ({ page }) => {
   await ready(page);
   await page.evaluate(() => {
+    // oxlint-disable-next-line typescript/unbound-method -- re-invoked below with the original receiver.
     const original = IDBObjectStore.prototype.getAll;
     let failOnce = true;
     IDBObjectStore.prototype.getAll = function (...args) {
@@ -245,7 +250,7 @@ test('keyboard focus survives toggle, edit and delete', async ({ page }) => {
 
 test('Tuck keeps records saved before the rename', async ({ page }) => {
   await page.goto('./icon.svg');
-  await page.evaluate(() => new Promise((resolve, reject) => {
+  await page.evaluate(() => new Promise<void>((resolve, reject) => {
     const request = indexedDB.open('randomcodespace-todos', 1);
     request.onupgradeneeded = () => request.result.createObjectStore('todos', { keyPath: 'id' });
     request.onerror = () => reject(request.error);
@@ -261,8 +266,8 @@ test('Tuck keeps records saved before the rename', async ({ page }) => {
   await expect(page).toHaveTitle('Tuck - A little more headspace');
   await expect(page.locator('a.brand')).toHaveAttribute('aria-label', 'Tuck home');
   await expect(page.getByText('Keep my existing list', { exact: true })).toBeVisible();
-  const manifest = await page.evaluate(async () => (await fetch('./manifest.webmanifest')).json());
-  expect(manifest.short_name).toBe('Tuck');
+  const manifest = await page.evaluate(async () => { const data: unknown = await (await fetch('./manifest.webmanifest')).json(); return data; });
+  expect(manifest).toMatchObject({ short_name: 'Tuck' });
 });
 
 test('due chips route tasks to views and the sheet edits date, flag and notes', async ({ page }) => {
@@ -272,6 +277,8 @@ test('due chips route tasks to views and the sheet edits date, flag and notes', 
   await page.getByRole('button', { name: 'Add task', exact: true }).click();
   await expect(page.getByRole('status')).toContainText('Added to Upcoming');
   await expect(page.locator('.todo-text', { hasText: 'Plan the trip' })).toHaveCount(0);
+  // Phones hide the tab bar while the composer has focus.
+  await page.evaluate(() => { if (document.activeElement instanceof HTMLElement) document.activeElement.blur(); });
   await view(page, 'Upcoming').click();
   await expect(page.getByText('Plan the trip', { exact: true })).toBeVisible();
   await expect(page.locator('.section').first()).toHaveText('Tomorrow');
@@ -287,24 +294,24 @@ test('due chips route tasks to views and the sheet edits date, flag and notes', 
   await expect(row.locator('.ring-today')).toHaveCount(1);
   await expect(row.locator('.meta')).toContainText('Important');
   await page.reload();
-  const stored = await page.evaluate(async () => (await import('./storage.js')).listTodos());
+  const stored = await page.evaluate(async () => { const url = './storage.js'; return ((await import(url)) as Storage).listTodos(); });
   expect(stored[0]).toMatchObject({ text: 'Plan the trip', flagged: true, notes: 'Passports in the drawer' });
-  expect(stored[0].due).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+  expect(stored[0]?.due).toMatch(/^\d{4}-\d{2}-\d{2}$/);
 });
 
 test('swiping a row completes or deletes it with undo', async ({ page }) => {
   await ready(page);
   await add(page, 'Swipe to finish');
   await add(page, 'Swipe to remove');
-  const drag = (text, distance) => page.evaluate(([label, dx]) => {
-    const row = [...document.querySelectorAll('.todo')].find(item => item.textContent.includes(label)).querySelector('.row');
+  const drag = (text: string, distance: number) => page.evaluate(([label, dx]) => {
+    const row = [...document.querySelectorAll('.todo')].find(item => item.textContent?.includes(label))!.querySelector('.row')!;
     const box = row.getBoundingClientRect();
-    const fire = (type, x) => (type === 'pointerdown' ? row : document).dispatchEvent(new PointerEvent(type, { bubbles: true, pointerId: 7, pointerType: 'touch', clientX: x, clientY: box.y + 20 }));
+    const fire = (type: string, x: number) => (type === 'pointerdown' ? row : document).dispatchEvent(new PointerEvent(type, { bubbles: true, pointerId: 7, pointerType: 'touch', clientX: x, clientY: box.y + 20 }));
     const start = box.x + box.width / 2;
     fire('pointerdown', start);
     for (let step = 1; step <= 10; step++) fire('pointermove', start + dx * step / 10);
     fire('pointerup', start + dx);
-  }, [text, distance]);
+  }, [text, distance] as const);
   await drag('Swipe to finish', 260);
   await expect(page.getByRole('checkbox', { name: 'Reopen Swipe to finish' })).toBeChecked();
   await drag('Swipe to remove', -260);
@@ -316,11 +323,11 @@ test('swiping a row completes or deletes it with undo', async ({ page }) => {
 test('pull down adds, long press offers quick actions, and closing the sheet saves', async ({ page }) => {
   await ready(page);
   await add(page, 'Hold me');
-  const touch = (type, y, target = '#workspace') => page.evaluate(([kind, clientY, selector]) => {
-    const node = document.querySelector(selector);
+  const touch = (type: string, y: number, target = '#workspace') => page.evaluate(([kind, clientY, selector]) => {
+    const node = document.querySelector(selector)!;
     const point = new Touch({ identifier: 1, target: node, clientX: 120, clientY });
     node.dispatchEvent(new TouchEvent(kind, { bubbles: true, cancelable: true, touches: kind === 'touchend' ? [] : [point], changedTouches: [point] }));
-  }, [type, y, target]);
+  }, [type, y, target] as const);
   const supportsTouch = await page.evaluate(() => { try { new Touch({ identifier: 1, target: document.body }); return true; } catch { return false; } });
   if (supportsTouch) {
     await touch('touchstart', 200);
@@ -339,4 +346,47 @@ test('pull down adds, long press offers quick actions, and closing the sheet sav
   await page.getByLabel('Edit task').fill('Held and renamed');
   await page.locator('#edit-dialog').evaluate(dialog => dialog.dispatchEvent(new MouseEvent('click', { bubbles: true })));
   await expect(page.getByText('Held and renamed', { exact: true })).toBeVisible();
+});
+
+test('phone dock gestures switch views and open and close search', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await ready(page);
+  const title = page.locator('#view-title');
+  const slide = (from: number, to: number, dy = 0) => page.evaluate(([first, last, rise]) => {
+    const buttons = [...document.querySelectorAll<HTMLElement>('#views button')];
+    const point = (index: number) => { const box = buttons[index]!.getBoundingClientRect(); return { x: box.x + box.width / 2, y: box.y + box.height / 2 }; };
+    const start = point(first);
+    const end = point(last);
+    const fire = (type: string, x: number, y: number) => buttons[first]!.dispatchEvent(new PointerEvent(type, { bubbles: true, pointerId: 9, pointerType: 'touch', clientX: x, clientY: y }));
+    fire('pointerdown', start.x, start.y);
+    for (let step = 1; step <= 6; step++) fire('pointermove', start.x + (end.x - start.x) * step / 6, start.y - rise * step / 6);
+    fire('pointerup', end.x, end.y - rise);
+  }, [from, to, dy] as const);
+  await slide(0, 2);
+  await expect(title).toHaveText('Anytime');
+  await slide(1, 1, 60);
+  await expect(page.locator('#shell')).toHaveClass(/searching/);
+  await expect(page.getByLabel('Search tasks')).toBeFocused();
+  await page.getByRole('button', { name: 'Cancel', exact: true }).click();
+  await expect(title).toHaveText('Anytime');
+
+  const supportsTouch = await page.evaluate(() => { try { new Touch({ identifier: 1, target: document.body }); return true; } catch { return false; } });
+  if (!supportsTouch) return;
+  const swipe = (selector: string, dx: number, dy: number) => page.evaluate(([target, x, y]) => {
+    const node = document.querySelector(target)!;
+    const box = node.getBoundingClientRect();
+    const at = (offsetX: number, offsetY: number) => new Touch({ identifier: 2, target: node, clientX: box.x + box.width / 2 + offsetX, clientY: box.y + box.height / 2 + offsetY });
+    node.dispatchEvent(new TouchEvent('touchstart', { bubbles: true, touches: [at(0, 0)], changedTouches: [at(0, 0)] }));
+    node.dispatchEvent(new TouchEvent('touchmove', { bubbles: true, touches: [at(x, y)], changedTouches: [at(x, y)] }));
+    node.dispatchEvent(new TouchEvent('touchend', { bubbles: true, touches: [], changedTouches: [at(x, y)] }));
+  }, [selector, dx, dy] as const);
+  await swipe('#view-title', -120, 8);
+  await expect(title).toHaveText('Done');
+  await swipe('#view-title', 120, -8);
+  await expect(title).toHaveText('Anytime');
+  await page.locator('#open-search').click();
+  await page.getByLabel('Search tasks').fill('x');
+  await swipe('#search-bar', 0, 60);
+  await expect(page.locator('#shell')).not.toHaveClass(/searching/);
+  await expect(page.getByLabel('Search tasks')).toHaveValue('');
 });
