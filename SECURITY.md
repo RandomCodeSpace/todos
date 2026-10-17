@@ -3,7 +3,7 @@
 Report vulnerabilities privately through this repository's Security tab. Do not
 post private todo data or sensitive details in a public issue.
 
-Todos stores data in this browser's IndexedDB. There is no account, remote sync,
+Tuck stores data in this browser's IndexedDB. There is no account, remote sync,
 analytics or application server. Device/browser access can expose the list.
 Backups are unencrypted JSON files; store them appropriately. Clearing browser
 site data removes todos. Offline support requires a successful online load first.

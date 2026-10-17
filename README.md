@@ -1,8 +1,8 @@
-# Todos
+# Tuck
 
 A private, offline-ready todo PWA for iPhone and desktop.
 
-**Open the app:** https://randomcodespace.github.io/todos/
+**Open the app:** https://randomcodespace.github.io/tuck/
 
 ## Features
 
@@ -24,9 +24,14 @@ Open the app in Safari, tap Share, then **Add to Home Screen**. Wait for
 **Ready for offline** during the first online visit. On desktop, use the browser's
 install control when available.
 
-Todos are stored per browser and device, not synced. Clearing site data deletes
+Your todos are stored per browser and device, not synced. Clearing site data deletes
 them. Export a backup periodically; persistent storage is requested only when
 you choose **Protect local storage** and the browser decides whether to grant it.
+
+If you installed the app before the Tuck rename, export a backup from that
+installation first, then add the new address to your home screen. Existing records
+in the same browser profile and old JSON backups remain compatible. Home-screen
+installations may have separate storage; import your backup there if needed.
 
 ## Develop
 
@@ -37,7 +42,7 @@ npm ci --ignore-scripts
 npm run dev
 ```
 
-Open http://127.0.0.1:4173/todos/. For a fresh development session, unregister the
+Open http://127.0.0.1:4173/tuck/. For a fresh development session, unregister the
 service worker in browser developer tools after changing cached source files.
 Production builds use a content-derived cache version.
 

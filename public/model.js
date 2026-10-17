@@ -8,7 +8,7 @@ export function normalizeText(value) {
 export function parseBackup(source) {
   const data = JSON.parse(source);
   if (!data || data.version !== 1 || !Array.isArray(data.todos) || data.todos.length > 10000) {
-    throw new Error('Choose a Todos backup with at most 10,000 todos.');
+    throw new Error('Choose a Tuck backup with at most 10,000 todos.');
   }
   const ids = new Set();
   return data.todos.map(item => {

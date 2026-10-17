@@ -7,19 +7,19 @@
   <meta name="description" content="A little space for what matters. Private, offline-ready todos for your phone and desktop.">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <meta name="apple-mobile-web-app-title" content="Todos">
+  <meta name="apple-mobile-web-app-title" content="Tuck">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self'; connect-src 'self'; worker-src 'self'; manifest-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'">
   <link rel="manifest" href="./manifest.webmanifest">
   <link rel="icon" type="image/svg+xml" href="./icon.svg">
   <link rel="apple-touch-icon" href="./icons/apple-touch-icon.png">
   <link rel="stylesheet" href="./styles.css">
-  <title>Todos - A little more headspace</title>
+  <title>Tuck - A little more headspace</title>
   <script type="module" src="./app.js"></script>
 </head>
 <body>
   <div class="app-shell">
     <header class="app-header">
-      <a class="brand" href="./" aria-label="Todos home"><span class="brand-mark" aria-hidden="true"></span>todos<span class="brand-period">.</span></a>
+      <a class="brand" href="./" aria-label="Tuck home"><span class="brand-mark" aria-hidden="true"></span>tuck<span class="brand-period">.</span></a>
       <div class="header-right"><span id="connection" class="connection"><span class="status-dot"></span><span id="connection-label">On your device</span></span><button id="install" class="button subtle" type="button">Install app</button></div>
     </header>
     <main class="workspace" id="workspace">
@@ -36,7 +36,7 @@
             <div class="filters" role="group" aria-label="Filter todos"><button type="button" data-filter="all" aria-pressed="true">All <span id="all-count">0</span></button><button type="button" data-filter="active" aria-pressed="false">Active <span id="active-count">0</span></button><button type="button" data-filter="completed" aria-pressed="false">Done <span id="done-count">0</span></button></div>
             <label class="search"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"></circle><path d="m16 16 5 5"></path></svg><input id="search" type="search" aria-label="Search todos" placeholder="Find a todo" maxlength="2000"></label>
           </div>
-          <ul id="todo-list" class="todo-list" aria-label="Todos"></ul>
+          <ul id="todo-list" class="todo-list" aria-label="Todo list"></ul>
           <div id="empty" class="empty"><div class="empty-mark" aria-hidden="true"><span></span><span></span><span></span></div><h2 id="empty-title">Start with one small thing</h2><p id="empty-description">A plan, an idea, something for later.<br>Your list is ready when you are.</p></div>
           <div class="list-footer"><span id="remaining">No rush. Start wherever you like.</span><button id="clear-completed" class="text-button" type="button" hidden>Clear completed</button></div>
         </section>
@@ -46,13 +46,13 @@
           <p class="quiet-note">Less to hold.<br>More room to think.</p>
         </aside>
       </div>
-      <footer class="app-footer"><span>A little space, all yours.</span><a href="https://github.com/RandomCodeSpace/todos" target="_blank" rel="noopener noreferrer">Made to stay simple <span aria-hidden="true">&#8599;</span></a></footer>
+      <footer class="app-footer"><span>A little space, all yours.</span><a href="https://github.com/RandomCodeSpace/tuck" target="_blank" rel="noopener noreferrer">Made to stay simple <span aria-hidden="true">&#8599;</span></a></footer>
     </main>
   </div>
   <div id="error" class="error-message" role="alert" hidden></div>
   <div id="notice" class="notice" role="status" hidden><span id="notice-text"></span><button id="undo" type="button" hidden>Undo</button><button id="dismiss-notice" type="button" aria-label="Dismiss notification">&#215;</button></div>
   <dialog id="edit-dialog" aria-labelledby="edit-title"><form id="edit-form"><h2 id="edit-title">A little adjustment</h2><label for="edit-text">Edit todo</label><textarea id="edit-text" rows="5" maxlength="2000" aria-describedby="edit-error" required></textarea><p id="edit-error" class="inline-error" role="alert" hidden></p><div class="dialog-actions"><button id="cancel-edit" class="button secondary" type="button">Cancel</button><button class="button primary" type="submit">Save changes</button></div></form></dialog>
   <dialog id="install-dialog" aria-labelledby="install-title"><h2 id="install-title">Your list, one tap away.</h2><p>On iPhone, open this page in Safari. Tap Share, then <strong>Add to Home Screen</strong>.</p><p>On desktop, use your browser's install option in the address bar or menu, when available.</p><p>Open the app online once and wait for "Ready for offline" before using it without a connection.</p><button id="close-install" class="button primary" type="button">Got it</button></dialog>
-  <noscript><p class="error-message">Enable JavaScript to use Todos. Your list is stored locally in this browser.</p></noscript>
+  <noscript><p class="error-message">Enable JavaScript to use Tuck. Your list is stored locally in this browser.</p></noscript>
 </body>
 </html>

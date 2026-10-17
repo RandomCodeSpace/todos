@@ -1,7 +1,7 @@
 {
   "id": "./",
-  "name": "Todos - A little more headspace",
-  "short_name": "Todos",
+  "name": "Tuck - A little more headspace",
+  "short_name": "Tuck",
   "description": "Your private, offline-ready todo list.",
   "start_url": "./",
   "scope": "./",

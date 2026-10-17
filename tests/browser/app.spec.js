@@ -79,7 +79,7 @@ test('invalid import preserves todos and valid import merges', async ({ page }) 
   await expect(page.getByText('Keep this', { exact: true })).toBeVisible();
   const download = page.waitForEvent('download');
   await page.getByRole('button', { name: 'Export backup' }).click();
-  expect((await download).suggestedFilename()).toMatch(/^todos-.*\.json$/);
+  expect((await download).suggestedFilename()).toMatch(/^tuck-.*\.json$/);
 });
 
 test('failed storage does not pretend the todo was saved', async ({ page }) => {
@@ -220,4 +220,26 @@ test('keyboard focus survives toggle, edit and delete', async ({ page }) => {
   await page.getByRole('button', { name: 'Delete Edited with keyboard' }).focus();
   await page.keyboard.press('Enter');
   await expect(page.getByRole('button', { name: /^All/ })).toBeFocused();
+});
+
+test('Tuck keeps records saved before the rename', async ({ page }) => {
+  await page.goto('./icon.svg');
+  await page.evaluate(() => new Promise((resolve, reject) => {
+    const request = indexedDB.open('randomcodespace-todos', 1);
+    request.onupgradeneeded = () => request.result.createObjectStore('todos', { keyPath: 'id' });
+    request.onerror = () => reject(request.error);
+    request.onsuccess = () => {
+      const db = request.result;
+      const transaction = db.transaction('todos', 'readwrite');
+      transaction.objectStore('todos').add({ id: 'before-rename', text: 'Keep my existing list', completed: false, createdAt: 100, updatedAt: 100 });
+      transaction.oncomplete = () => { db.close(); resolve(); };
+      transaction.onabort = () => reject(transaction.error);
+    };
+  }));
+  await ready(page);
+  await expect(page).toHaveTitle('Tuck - A little more headspace');
+  await expect(page.getByRole('link', { name: 'Tuck home' })).toBeVisible();
+  await expect(page.getByText('Keep my existing list', { exact: true })).toBeVisible();
+  const manifest = await page.evaluate(async () => (await fetch('./manifest.webmanifest')).json());
+  expect(manifest.short_name).toBe('Tuck');
 });
