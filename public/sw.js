@@ -15,6 +15,7 @@ self.addEventListener('activate', event => {
   })());
 });
 self.addEventListener('message', event => {
+  if (event.origin !== self.location.origin || !event.source?.url?.startsWith(self.registration.scope)) return;
   if (event.data === 'ACTIVATE_UPDATE') self.skipWaiting();
 });
 self.addEventListener('fetch', event => {
