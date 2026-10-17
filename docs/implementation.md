@@ -24,8 +24,9 @@ grey canvas (#eceef1), white cards (radius 16, 8px gaps), ink (#1f2328),
 secondary text (#5f6670), soft square checkboxes, status rings (green today,
 blue upcoming, purple anytime, red overdue), a floating composer pill, white
 bottom sheets with a grabber, a grey info group and a pale note card. Status
-bar style is default so dark glyphs sit on the light canvas below the Dynamic
-Island. Desktop uses a sidebar and a white working panel. Optional record
+bar style is black-translucent so the light canvas runs under the status bar;
+with default, iOS 26 paints a dimmed grey band above the app. Safe-area
+padding keeps content clear of the Dynamic Island. Desktop uses a sidebar and a white working panel. Optional record
 fields: due (local YYYY-MM-DD), flagged, notes, completedAt. Backups stay
 version 1.
 
