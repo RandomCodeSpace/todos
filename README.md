@@ -6,28 +6,34 @@ A private, offline-ready todo PWA for iPhone and desktop.
 
 ## Features
 
-- Today, Upcoming, Anytime and Done views. Overdue tasks stay on Today, and
-  tasks finished today collect in a Completed group.
-- Gestures first, each with a tap or keyboard equivalent: pull the list down to
-  add, swipe a task right to complete or left to delete (with undo), hold a
-  task for quick actions (Today, Tomorrow, Weekend, Important, Delete), swipe a
-  sheet down to close it, and swipe down on the composer to hide the keyboard.
-- Thumb-first phone layout: views, search, settings and the composer sit in a
-  bottom dock. Slide along the tab bar to switch views, swipe it up to search,
-  swipe the search field down to close it, and swipe left or right above or
-  between tasks to move to the next or previous view.
-- Floating composer with Today, Tomorrow, Weekend or any date, plus Important.
-  Return adds and keeps the keyboard open.
-- Task sheet for text, due date, importance and a note. Closing it saves;
-  Cancel discards.
-- Search across tasks and notes.
-- Fixed app shell on phones: the page never scrolls; only the list scrolls
-  when it overflows. Desktop uses a sidebar and a white working panel, with
-  shortcuts `N` (new), `/` (search) and `1`-`4` (views).
+- Smart lists: Today, Upcoming, Starred, All and Completed, plus your own
+  coloured lists. Overdue tasks stay on Today, tasks finished today fold into a
+  completed group, and Upcoming groups tasks by day.
+- Quick add in one line: type `tomorrow 9am`, `friday`, `oct 20`, `in 3 days`,
+  `#list` or `!` (star) and the words turn into chips you can tap to change.
+  Add subtask lines in the same draft. Return adds and keeps the keyboard open.
+- Subtasks: one level, shown with a progress bar, expandable inline, reordered
+  by drag. Completing a task completes its subtasks.
+- Dependencies: a task can wait on other tasks. It shows a lock and what it is
+  waiting on, cannot be completed early, and unlocks when they are done. Cycles
+  are refused.
+- Due dates with optional times and repeats (daily, weekdays, weekly, monthly,
+  yearly). Completing a repeating task moves it to its next date.
+- Thumb-first phone layout: Today, Upcoming, Lists, Search and + sit in a bottom
+  dock; sheets keep their main actions at the bottom edge. Gestures, each with a
+  tap or keyboard equivalent: swipe a task right to complete it, left for Later
+  and Delete (a long swipe deletes, with undo); hold a task for quick actions or
+  hold and drag it onto a day in the week strip; pull the list down to add;
+  slide along the dock to switch views and swipe it up for lists; swipe a sheet
+  down to close it. Desktop uses a sidebar and a white working panel, with
+  shortcuts `N` (new), `/` (search) and `1`-`5` (views).
+- Task sheet for text, list, star, date, time, repeat, subtasks, dependencies
+  and a note. Closing it saves.
+- Search across tasks, notes and subtasks.
 - iPhone integration where the web platform allows it: haptic feedback on
   iOS 18 (via the native switch control), an optional app icon badge for tasks
   due today (home-screen app, notification permission required), share sheet
-  for tasks and backups, native date pickers and safe areas.
+  for tasks and backups, native date and time pickers and safe areas.
 - IndexedDB persistence, offline use, JSON backup export and validated, atomic
   import. Newer local changes win. Older backups and records still load.
 - Installable app with an offline shell. New versions install in the
@@ -37,7 +43,8 @@ A private, offline-ready todo PWA for iPhone and desktop.
   respected. Pinch zoom remains available.
 
 Web apps cannot schedule reminders, use Live Activities or widgets without a
-push server or native code, so Tuck does not promise them.
+push server or native code, so Tuck does not promise them. A task's time is
+shown and sorted, but it does not alert you.
 
 ## Install on iPhone
 

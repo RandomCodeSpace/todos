@@ -22,90 +22,139 @@
   <div class="status-tint" aria-hidden="true"></div>
   <svg class="sprite" aria-hidden="true">
     <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4.5 4.5"/></symbol>
-    <symbol id="i-more" viewBox="0 0 24 24"><path d="M5 8h14M5 12h14M5 16h9"/></symbol>
     <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
     <symbol id="i-check" viewBox="0 0 24 24"><path d="m6 12.5 4 4 8-9"/></symbol>
     <symbol id="i-trash" viewBox="0 0 24 24"><path d="M4.5 7h15M9.5 7V4.5h5V7M6.5 7l1 12.5h9l1-12.5M10 11v5M14 11v5"/></symbol>
-    <symbol id="i-flag" viewBox="0 0 24 24"><path d="M6 21V4M6 4.5c4-2 8 2 12 0v9c-4 2-8-2-12 0"/></symbol>
+    <symbol id="i-star" viewBox="0 0 24 24"><path d="m12 3.8 2.5 5.2 5.6.7-4.1 3.9 1 5.6L12 16.5l-5 2.7 1-5.6-4.1-3.9 5.6-.7z"/></symbol>
     <symbol id="i-share" viewBox="0 0 24 24"><path d="M12 3.5v11M8 7.5l4-4 4 4M6.5 11H5v9.5h14V11h-1.5"/></symbol>
     <symbol id="i-close" viewBox="0 0 24 24"><path d="m6.5 6.5 11 11M17.5 6.5l-11 11"/></symbol>
     <symbol id="i-cal" viewBox="0 0 24 24"><rect x="4" y="5.5" width="16" height="14.5" rx="3"/><path d="M4 10h16M8.5 3.5v4M15.5 3.5v4"/></symbol>
     <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2.5v2M12 19.5v2M4.6 4.6 6 6M18 18l1.4 1.4M2.5 12h2M19.5 12h2M4.6 19.4 6 18M18 6l1.4-1.4"/></symbol>
     <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M12 19V5M6 11l6-6 6 6"/></symbol>
-    <symbol id="i-down" viewBox="0 0 24 24"><path d="M12 5v14M6 13l6 6 6-6"/></symbol>
+    <symbol id="i-later" viewBox="0 0 24 24"><path d="M5 12h13M13 7l5 5-5 5"/></symbol>
     <symbol id="i-chevron" viewBox="0 0 24 24"><path d="m7 10 5 5 5-5"/></symbol>
+    <symbol id="i-next" viewBox="0 0 24 24"><path d="m9.5 6 6 6-6 6"/></symbol>
+    <symbol id="i-grid" viewBox="0 0 24 24"><rect x="4" y="4" width="6.5" height="6.5" rx="2"/><rect x="13.5" y="4" width="6.5" height="6.5" rx="2"/><rect x="4" y="13.5" width="6.5" height="6.5" rx="2"/><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="2"/></symbol>
+    <symbol id="i-list" viewBox="0 0 24 24"><path d="M9.5 7h9M9.5 12h9M9.5 17h9"/><circle cx="5.5" cy="7" r=".6"/><circle cx="5.5" cy="12" r=".6"/><circle cx="5.5" cy="17" r=".6"/></symbol>
+    <symbol id="i-lock" viewBox="0 0 24 24"><rect x="5" y="10.5" width="14" height="10" rx="2.5"/><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5"/></symbol>
+    <symbol id="i-repeat" viewBox="0 0 24 24"><path d="M4 11V9a3 3 0 0 1 3-3h12M16 3l3 3-3 3M20 13v2a3 3 0 0 1-3 3H5M8 21l-3-3 3-3"/></symbol>
+    <symbol id="i-link" viewBox="0 0 24 24"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></symbol>
+    <symbol id="i-sub" viewBox="0 0 24 24"><path d="M6 4v8a3 3 0 0 0 3 3h10M15 11l4 4-4 4"/></symbol>
+    <symbol id="i-more" viewBox="0 0 24 24"><circle cx="6" cy="12" r="1.3"/><circle cx="12" cy="12" r="1.3"/><circle cx="18" cy="12" r="1.3"/></symbol>
+    <symbol id="i-handle" viewBox="0 0 24 24"><path d="M8 8h8M8 12h8M8 16h8"/></symbol>
+    <symbol id="i-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 3v2.5M12 18.5V21M3 12h2.5M18.5 12H21M5.6 5.6l1.8 1.8M16.6 16.6l1.8 1.8M5.6 18.4l1.8-1.8M16.6 7.4l1.8-1.8"/></symbol>
+    <symbol id="i-done" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="m8 12.3 2.7 2.7 5.3-6"/></symbol>
   </svg>
 
   <div class="shell" id="shell">
     <aside class="side">
       <a class="brand" href="./" aria-label="Tuck home"><span class="brand-mark" aria-hidden="true"><svg><use href="#i-check"/></svg></span>Tuck</a>
       <label class="search-field" id="search-bar"><svg aria-hidden="true"><use href="#i-search"/></svg><input id="search" type="search" aria-label="Search tasks" placeholder="Search" maxlength="200" enterkeyhint="search" autocomplete="off"><button id="cancel-search" type="button" class="search-cancel">Cancel</button></label>
-      <nav class="views" id="views" aria-label="Views">
-        <button type="button" data-view="today" aria-pressed="true"><span class="ring ring-today" aria-hidden="true"></span><span class="view-name">Today</span> <span class="count" id="count-today"></span></button>
-        <button type="button" data-view="upcoming" aria-pressed="false"><span class="ring ring-upcoming" aria-hidden="true"></span><span class="view-name">Upcoming</span> <span class="count" id="count-upcoming"></span></button>
-        <button type="button" data-view="anytime" aria-pressed="false"><span class="ring ring-anytime" aria-hidden="true"></span><span class="view-name">Anytime</span> <span class="count" id="count-anytime"></span></button>
-        <button type="button" data-view="done" aria-pressed="false"><span class="ring ring-done" aria-hidden="true"></span><span class="view-name">Done</span> <span class="count" id="count-done"></span></button>
-      </nav>
-      <p class="side-status"><span id="rail-status">Saved on this device</span></p>
+      <nav class="nav side-nav" id="side-nav" aria-label="Lists"></nav>
+      <div class="side-foot"><span id="rail-status">Saved on this device</span><button class="icon-button" type="button" data-open-settings aria-label="Settings"><svg aria-hidden="true"><use href="#i-gear"/></svg></button></div>
     </aside>
 
     <section class="panel">
       <header class="topbar">
         <div class="title-block">
-          <p class="eyebrow" id="today-label">Today</p>
+          <p class="eyebrow" id="eyebrow"></p>
           <h1 id="view-title">Today</h1>
         </div>
-        <div class="top-actions">
-          <button id="open-search" class="icon-button" type="button" aria-label="Search"><svg aria-hidden="true"><use href="#i-search"/></svg></button>
-          <button id="open-settings" class="icon-button" type="button" aria-label="Settings"><svg aria-hidden="true"><use href="#i-more"/></svg></button>
+        <div class="progress" id="progress" role="img" aria-label="">
+          <svg viewBox="0 0 44 44" aria-hidden="true"><circle cx="22" cy="22" r="18"/><circle id="progress-arc" cx="22" cy="22" r="18" pathLength="100"/></svg>
+          <span id="progress-text"></span>
         </div>
       </header>
-      <p class="subtitle" id="summary" aria-live="polite"></p>
+      <p class="sr-only" id="summary" aria-live="polite"></p>
       <button id="update-app" class="update-pill" type="button" hidden>Update available</button>
 
       <main class="list-area" id="workspace">
         <div class="pull" id="pull" aria-hidden="true"><span class="pull-box"></span><span id="pull-label">Pull to add a task</span></div>
         <ul id="todo-list" class="todo-list" aria-label="Tasks"></ul>
-        <div id="empty" class="empty"><p class="empty-title" id="empty-title">A clear day</p><p id="empty-description">Pull down or tap below to add a task.</p></div>
+        <div id="empty" class="empty"><p class="empty-title" id="empty-title">A clear day</p><p id="empty-description">Tap + to add a task.</p></div>
       </main>
 
+      <div class="week" id="week" role="group" aria-label="Jump to a day"></div>
+
+      <div class="composer-scrim" id="composer-scrim" aria-hidden="true"></div>
       <form id="add-form" class="composer" autocomplete="off">
-        <div class="chips" role="group" aria-label="When">
-          <button type="button" class="chip" data-due="today" aria-pressed="false">Today</button>
-          <button type="button" class="chip" data-due="tomorrow" aria-pressed="false">Tomorrow</button>
-          <button type="button" class="chip" data-due="weekend" aria-pressed="false">Weekend</button>
-          <label class="chip chip-date" id="pick-chip"><svg aria-hidden="true"><use href="#i-cal"/></svg><span id="pick-label">Date</span><input id="new-due" type="date" aria-label="Pick a due date"></label>
-          <button type="button" class="chip chip-flag" id="new-flag" aria-pressed="false" aria-label="Important"><svg aria-hidden="true"><use href="#i-flag"/></svg></button>
+        <div class="field-wrap">
+          <div class="mirror" id="mirror" aria-hidden="true"></div>
+          <textarea id="new-todo" name="todo" rows="1" maxlength="2000" aria-label="New task" aria-describedby="parse-hint" placeholder="New task" enterkeyhint="done" autocapitalize="sentences" autocorrect="on" spellcheck="true" required disabled></textarea>
         </div>
-        <div class="composer-row">
-          <div class="composer-field">
-            <label for="new-todo" class="sr-only">New task</label>
-            <input id="new-todo" name="todo" type="text" maxlength="2000" placeholder="Write a new task" enterkeyhint="done" autocapitalize="sentences" autocorrect="on" spellcheck="true" required disabled>
-            <button id="add-button" class="add-button" type="submit" aria-label="Add task" disabled><svg aria-hidden="true"><use href="#i-arrow"/></svg></button>
-          </div>
+        <p class="sr-only" id="parse-hint">Type a date, a time, #list or ! to star.</p>
+        <ul class="draft-subs" id="draft-subs" aria-label="Subtasks"></ul>
+        <div class="tools" role="group" aria-label="Task options">
+          <button type="button" class="tool" id="new-date"><svg aria-hidden="true"><use href="#i-cal"/></svg><span id="new-date-label">Date</span></button>
+          <button type="button" class="tool" id="new-list"><span class="dot" id="new-list-dot" aria-hidden="true"></span><span id="new-list-label">List</span></button>
+          <button type="button" class="tool tool-icon" id="new-flag" aria-pressed="false" aria-label="Star"><svg aria-hidden="true"><use href="#i-star"/></svg></button>
+          <button type="button" class="tool" id="new-dep" aria-label="Wait on another task"><svg aria-hidden="true"><use href="#i-link"/></svg><span id="new-dep-label"></span></button>
+          <button id="add-button" class="add-button" type="submit" aria-label="Add task" disabled><svg aria-hidden="true"><use href="#i-arrow"/></svg></button>
         </div>
       </form>
+
+      <div class="dock" id="dock">
+        <nav class="tabs" id="views" aria-label="Views">
+          <button type="button" data-view="today" aria-pressed="true"><svg aria-hidden="true"><use href="#i-sun"/></svg><span class="view-name">Today</span><span class="count" id="count-today"></span></button>
+          <button type="button" data-view="upcoming" aria-pressed="false"><svg aria-hidden="true"><use href="#i-cal"/></svg><span class="view-name">Upcoming</span><span class="count" id="count-upcoming"></span></button>
+          <button type="button" id="open-lists" aria-pressed="false" aria-haspopup="dialog"><svg aria-hidden="true"><use href="#i-grid"/></svg><span class="view-name">Lists</span></button>
+          <button type="button" id="open-search" aria-haspopup="true"><svg aria-hidden="true"><use href="#i-search"/></svg><span class="view-name">Search</span></button>
+        </nav>
+        <button type="button" class="fab" id="fab" aria-label="Compose"><svg aria-hidden="true"><use href="#i-plus"/></svg></button>
+      </div>
     </section>
   </div>
 
   <div id="error" class="toast toast-error" role="alert" hidden></div>
   <div id="notice" class="toast" role="status" hidden><span id="notice-text"></span><button id="undo" type="button" hidden>Undo</button><button id="dismiss-notice" type="button" aria-label="Dismiss notification"><svg aria-hidden="true"><use href="#i-close"/></svg></button></div>
 
-  <dialog id="edit-dialog" class="sheet" aria-labelledby="edit-title">
+  <dialog id="edit-dialog" class="sheet edit-sheet" aria-labelledby="edit-title">
     <form id="edit-form">
       <div class="grabber" aria-hidden="true"></div>
-      <div class="sheet-head"><h2 id="edit-title" class="sr-only" tabindex="-1" autofocus>Task</h2><button id="cancel-edit" class="text-button" type="button">Cancel</button><button class="text-button strong" type="submit" aria-label="Save changes">Done</button></div>
+      <h2 id="edit-title" class="sr-only" tabindex="-1" autofocus>Task</h2>
+      <div class="edit-head">
+        <button type="button" class="crumb" id="edit-list"><span class="dot" id="edit-list-dot" aria-hidden="true"></span><span id="edit-list-label">No list</span><svg aria-hidden="true"><use href="#i-chevron"/></svg></button>
+        <span class="edit-head-actions">
+          <button type="button" class="icon-button star-toggle" id="edit-flag" aria-pressed="false" aria-label="Starred"><svg aria-hidden="true"><use href="#i-star"/></svg></button>
+          <button class="text-button strong" type="submit" aria-label="Save changes">Done</button>
+        </span>
+      </div>
       <div class="sheet-body">
-        <div class="title-row"><span class="box" aria-hidden="true"></span><label for="edit-text" class="sr-only">Edit task</label><textarea id="edit-text" rows="1" maxlength="2000" aria-describedby="edit-error" enterkeyhint="done" autocapitalize="sentences" required></textarea></div>
+        <div class="title-row"><span class="box" id="edit-box" aria-hidden="true"></span><label for="edit-text" class="sr-only">Edit task</label><textarea id="edit-text" rows="1" maxlength="2000" aria-describedby="edit-error" enterkeyhint="done" autocapitalize="sentences" required></textarea></div>
+        <p class="when" id="edit-when"></p>
         <p id="edit-error" class="inline-error" role="alert" hidden></p>
-        <div class="info">
-          <div class="info-row"><span>Due date</span><span class="select-pill"><input id="edit-due" type="date" aria-label="Due date"><button id="clear-due" class="clear-due" type="button" aria-label="Remove due date"><svg aria-hidden="true"><use href="#i-close"/></svg></button></span></div>
-          <div class="quick-dates" role="group" aria-label="Quick due dates"><button type="button" class="chip" data-edit-due="today">Today</button><button type="button" class="chip" data-edit-due="tomorrow">Tomorrow</button><button type="button" class="chip" data-edit-due="weekend">Weekend</button></div>
-          <label class="info-row"><span>Important</span><input id="edit-flag" type="checkbox" switch class="switch"></label>
-        </div>
+
+        <section class="block" aria-labelledby="subs-heading">
+          <h3 id="subs-heading">Subtasks <span class="bar" aria-hidden="true"><i id="subs-bar"></i></span><span id="subs-count"></span></h3>
+          <div class="group">
+            <ul class="sub-list" id="edit-subs"></ul>
+            <label class="add-row"><svg aria-hidden="true"><use href="#i-plus"/></svg><input id="new-sub-input" type="text" maxlength="2000" placeholder="Add subtask" aria-label="Add subtask" enterkeyhint="done" autocapitalize="sentences"></label>
+          </div>
+        </section>
+
+        <section class="block" aria-labelledby="details-heading">
+          <h3 id="details-heading">Details</h3>
+          <div class="group">
+            <button type="button" class="group-row" id="edit-date"><svg aria-hidden="true"><use href="#i-cal"/></svg><span>Due</span><span class="value" id="edit-date-label">None</span></button>
+            <button type="button" class="group-row" id="edit-repeat"><svg aria-hidden="true"><use href="#i-repeat"/></svg><span>Repeat</span><span class="value" id="edit-repeat-label">Never</span></button>
+          </div>
+        </section>
+
+        <section class="block" id="deps-block" aria-labelledby="deps-heading">
+          <h3 id="deps-heading">Dependencies</h3>
+          <div class="group">
+            <ul class="dep-list" id="edit-deps"></ul>
+            <button type="button" class="group-row add" id="add-dep"><svg aria-hidden="true"><use href="#i-link"/></svg><span>Wait on another task</span></button>
+          </div>
+        </section>
+
         <label for="edit-notes" class="sr-only">Notes</label>
-        <textarea id="edit-notes" class="note" rows="4" maxlength="4000" placeholder="Write a note..."></textarea>
-        <div class="sheet-actions"><button id="share-task" class="soft-button" type="button">Share</button><button id="delete-task" class="soft-button danger" type="button">Delete task</button></div>
+        <textarea id="edit-notes" class="note" rows="4" maxlength="4000" placeholder="Add a note"></textarea>
+      </div>
+      <div class="action-bar">
+        <button type="button" class="primary" id="edit-complete"><svg aria-hidden="true"><use href="#i-check"/></svg><span id="edit-complete-label">Complete</span></button>
+        <button type="button" class="round" id="edit-later" aria-label="Do it tomorrow"><svg aria-hidden="true"><use href="#i-later"/></svg></button>
+        <button type="button" class="round" id="edit-more" aria-label="More actions"><svg aria-hidden="true"><use href="#i-more"/></svg></button>
       </div>
     </form>
   </dialog>
@@ -115,11 +164,61 @@
     <p class="action-title" id="actions-title" tabindex="-1" autofocus></p>
     <div class="action-grid">
       <button type="button" data-action="today"><svg aria-hidden="true"><use href="#i-sun"/></svg>Today</button>
-      <button type="button" data-action="tomorrow"><svg aria-hidden="true"><use href="#i-arrow"/></svg>Tomorrow</button>
+      <button type="button" data-action="tomorrow"><svg aria-hidden="true"><use href="#i-later"/></svg>Tomorrow</button>
       <button type="button" data-action="weekend"><svg aria-hidden="true"><use href="#i-cal"/></svg>Weekend</button>
-      <button type="button" data-action="flag"><svg aria-hidden="true"><use href="#i-flag"/></svg><span id="action-flag-label">Important</span></button>
+      <button type="button" data-action="flag"><svg aria-hidden="true"><use href="#i-star"/></svg><span id="action-flag-label">Star</span></button>
     </div>
     <button type="button" class="soft-button danger wide" data-action="delete">Delete task</button>
+  </dialog>
+
+  <dialog id="lists-dialog" class="sheet lists-sheet" aria-labelledby="lists-title">
+    <div class="grabber" aria-hidden="true"></div>
+    <div class="sheet-head"><h2 id="lists-title" tabindex="-1" autofocus>Lists</h2><span><button type="button" class="text-button" id="reorder-lists" aria-pressed="false">Edit</button><button class="icon-button" type="button" data-open-settings aria-label="Settings"><svg aria-hidden="true"><use href="#i-gear"/></svg></button></span></div>
+    <div class="sheet-body"><nav class="nav sheet-nav" id="sheet-nav" aria-label="Lists"></nav></div>
+    <div class="sheet-foot"><button type="button" class="search-launch" id="lists-search"><svg aria-hidden="true"><use href="#i-search"/></svg>Search tasks</button><button type="button" class="pill-button" data-new-list><svg aria-hidden="true"><use href="#i-plus"/></svg>List</button></div>
+  </dialog>
+
+  <dialog id="list-dialog" class="sheet" aria-labelledby="list-title">
+    <form id="list-form">
+      <div class="grabber" aria-hidden="true"></div>
+      <div class="sheet-head"><h2 id="list-title" tabindex="-1">New list</h2><button class="text-button strong" type="submit">Done</button></div>
+      <div class="sheet-body">
+        <label for="list-name" class="sr-only">List name</label>
+        <input id="list-name" class="list-name-input" type="text" maxlength="60" placeholder="List name" required enterkeyhint="done" autocapitalize="words">
+        <fieldset class="swatches" id="swatches"><legend class="sr-only">Colour</legend></fieldset>
+        <p id="list-error" class="inline-error" role="alert" hidden></p>
+        <button type="button" class="soft-button danger" id="delete-list" hidden>Delete list</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="date-dialog" class="sheet" aria-labelledby="date-title">
+    <div class="grabber" aria-hidden="true"></div>
+    <div class="sheet-head"><h2 id="date-title" tabindex="-1" autofocus>Date</h2><button class="text-button strong" type="button" id="date-done">Done</button></div>
+    <div class="sheet-body">
+      <div class="quick-grid" role="group" aria-label="Quick dates">
+        <button type="button" data-quick="today"><svg aria-hidden="true"><use href="#i-sun"/></svg>Today</button>
+        <button type="button" data-quick="tomorrow"><svg aria-hidden="true"><use href="#i-later"/></svg>Tomorrow</button>
+        <button type="button" data-quick="weekend"><svg aria-hidden="true"><use href="#i-cal"/></svg>Weekend</button>
+        <button type="button" data-quick="next-week"><svg aria-hidden="true"><use href="#i-next"/></svg>Next week</button>
+      </div>
+      <div class="group">
+        <label class="group-row"><span>Date</span><input id="date-due" class="value-input" type="date"></label>
+        <label class="group-row"><span>Time</span><input id="date-time" class="value-input" type="time"></label>
+        <label class="group-row"><span>Repeat</span><select id="date-repeat" class="value-input"><option value="">Never</option><option value="daily">Every day</option><option value="weekdays">Weekdays</option><option value="weekly">Every week</option><option value="monthly">Every month</option><option value="yearly">Every year</option></select></label>
+      </div>
+      <button type="button" class="soft-button" id="date-clear">Remove date</button>
+    </div>
+  </dialog>
+
+  <dialog id="picker-dialog" class="sheet" aria-labelledby="picker-title">
+    <div class="grabber" aria-hidden="true"></div>
+    <div class="sheet-head"><h2 id="picker-title" tabindex="-1" autofocus></h2><button class="text-button" type="button" id="picker-close">Cancel</button></div>
+    <div class="sheet-body">
+      <label class="search-field picker-search" id="picker-search-bar"><svg aria-hidden="true"><use href="#i-search"/></svg><input id="picker-search" type="search" aria-label="Filter" placeholder="Filter" autocomplete="off"></label>
+      <div class="group" id="picker-options" role="list"></div>
+      <p class="group-note" id="picker-empty" hidden></p>
+    </div>
   </dialog>
 
   <dialog id="settings-dialog" class="sheet" aria-labelledby="settings-title">
@@ -127,20 +226,20 @@
     <div class="sheet-head"><h2 id="settings-title" tabindex="-1" autofocus>Settings</h2><button id="close-settings" class="text-button strong" type="button">Done</button></div>
     <div class="sheet-body">
       <div class="group">
-        <button id="export" class="row-button" type="button" disabled><span>Export backup</span><svg aria-hidden="true"><use href="#i-share"/></svg></button>
-        <button id="import" class="row-button" type="button" disabled><span>Restore from backup</span></button>
+        <button id="export" class="group-row" type="button" disabled><span>Export backup</span><svg aria-hidden="true"><use href="#i-share"/></svg></button>
+        <button id="import" class="group-row" type="button" disabled><span>Restore from backup</span></button>
         <input id="import-file" type="file" accept=".json,application/json" hidden>
-        <button id="persist" class="row-button" type="button" hidden><span>Protect local storage</span></button>
-        <label class="row-button" id="badge-row" hidden><span>Show count on app icon</span><input id="badge-toggle" type="checkbox" switch class="switch"></label>
-        <button id="clear-completed" class="row-button danger" type="button" hidden><span>Clear completed</span></button>
+        <button id="persist" class="group-row" type="button" hidden><span>Protect local storage</span></button>
+        <label class="group-row" id="badge-row" hidden><span>Show count on app icon</span><input id="badge-toggle" type="checkbox" switch class="switch"></label>
+        <button id="clear-completed" class="group-row danger" type="button" hidden><span>Clear completed</span></button>
       </div>
       <p class="group-note" id="persistence-status" role="status">Tasks stay in this browser on this device. Export a backup now and then.</p>
       <div class="group">
-        <div class="row-static"><span>Offline</span><span id="offline-status" class="muted" role="status">Preparing offline mode...</span></div>
-        <button id="install" class="row-button" type="button" hidden><span>Add to Home Screen</span></button>
+        <div class="group-row static"><span>Offline</span><span id="offline-status" class="value" role="status">Preparing offline mode...</span></div>
+        <button id="install" class="group-row" type="button" hidden><span>Add to Home Screen</span></button>
       </div>
       <div id="install-help" class="group-note" hidden><p>In Safari, tap <strong>Share</strong>, then <strong>Add to Home Screen</strong>. Tuck opens full screen and works offline.</p></div>
-      <p class="group-note">Pull the list down to add. Swipe a task right to complete it, left to delete it, or hold it for quick actions. Swipe left or right above or between tasks to change views, slide along the tab bar to jump between views, and swipe the tab bar up to search. Swipe a sheet or the search field down to close it. Keys: <kbd>N</kbd> new, <kbd>/</kbd> search, <kbd>1</kbd>-<kbd>4</kbd> views.</p>
+      <p class="group-note">Type dates, times, <kbd>#list</kbd> and <kbd>!</kbd> straight into a new task. Swipe a task right to complete it or left for Later and Delete. Hold a task for quick actions, or hold and drag it onto a day. Pull the list down to add, swipe up on the dock for lists, and swipe a sheet down to close it. Keys: <kbd>N</kbd> new, <kbd>/</kbd> search, <kbd>1</kbd>-<kbd>5</kbd> views.</p>
     </div>
   </dialog>
 
