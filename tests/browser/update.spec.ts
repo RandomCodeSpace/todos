@@ -38,6 +38,8 @@ test('updates wait for unsaved drafts, then reload automatically and stay offlin
     await page.goto(`http://127.0.0.1:${(server.address() as AddressInfo).port}/tuck/`);
     await expect(page.locator('#offline-status')).toHaveText('Ready for offline');
     await expect(page).toHaveTitle('Earlier release');
+    // Phones open the composer from the dock.
+    if (await page.locator('#fab').isVisible()) await page.locator('#fab').click();
     await page.getByLabel('New task').fill('Keep through update');
     await page.getByRole('button', { name: 'Add task', exact: true }).click();
     await expect(page.getByText('Keep through update', { exact: true })).toBeVisible();
@@ -48,6 +50,7 @@ test('updates wait for unsaved drafts, then reload automatically and stay offlin
     await expect(page.getByRole('status')).toContainText('Tuck updated.');
 
     release = 3;
+    if (await page.locator('#fab').isVisible()) await page.locator('#fab').click();
     await page.getByLabel('New task').fill('Unsaved draft');
     await page.evaluate(async () => (await navigator.serviceWorker.getRegistration())?.update());
     await expect(page.getByRole('button', { name: 'Update available' })).toBeVisible();

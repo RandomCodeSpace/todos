@@ -28,8 +28,11 @@ bar style is default so dark glyphs sit on the light canvas. Safari 26 tints the
 status bar from the fixed element at the top edge and keeps the last sampled
 colour, so an opaque canvas-coloured strip sits there; without it, a closed
 sheet's dimmed backdrop stays in the status bar. Desktop uses a sidebar and a white working panel. Optional record
-fields: due (local YYYY-MM-DD), flagged, notes, completedAt. Backups stay
-version 1.
+fields: due (local YYYY-MM-DD), time (HH:MM), flagged (shown as Starred), notes,
+completedAt, listId, parentId (one level of subtasks), blockedBy (ids of
+top-level tasks), repeat and order. Lists live in a second object store added in
+database version 2. Backups are version 2 (todos and lists); version 1 backups
+still import.
 
 ## Plan
 
